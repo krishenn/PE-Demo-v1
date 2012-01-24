@@ -1053,7 +1053,11 @@ function initDivisions(rawdata) {
 		],
 		//"aaSortingFixed": [[ 2, 'asc' ]]
 		//"aaSorting": [[ 1, 'asc' ]]
-		"bSort": false
+		"bSort": false,
+		"oLanguage": {
+			"sLengthMenu:": "Display _MENU_ records per page",
+			"sSearch": "Keyword Filter:"
+		}
 	});
 
 	//conditional columns as necessary
@@ -1445,7 +1449,11 @@ function initData(tab,data) {
 				}					
 			],
 			"aaData": aaData,
-			"aaSorting": [[2, 'desc']]
+			"aaSorting": [[2, 'desc']],
+			"oLanguage": {
+				"sLengthMenu:": "Display _MENU_ records per page",
+				"sSearch": "Keyword Filter:"
+			}
 		});
 		
 		//hide inst id if public

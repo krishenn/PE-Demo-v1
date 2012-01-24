@@ -318,13 +318,17 @@ function initTopics(rawdata,includefilter) {
 	});
 //console.log(aaData);		
 
+	//rearrange datatable header depending on whether we're going to show filter element or not
+	var sDom = '<"H"Tflr>t<"F"ip>';
+	if (includefilter) sDom = '<"H"Tflr>t<"F"ip>';
+	
 	var oTable = $('#topics_table').dataTable({
 		//TableTools - copy, csv, print, pdf
 		"bJQueryUI": true,
 		"sPaginationType": "full_numbers",
 		//"sDom": 'T<"clear">lfrtip',
 		//"sDom": 'T<"clear"><"H"lfr>t<"F"ip>',
-		"sDom": '<"H"lTfr>t<"F"ip>',
+		"sDom": sDom,
         "oTableTools": {
             "aButtons": [
                 {
@@ -411,7 +415,11 @@ function initTopics(rawdata,includefilter) {
 				"aTargets": [ 9 ]
 			}
 		],
-		"aaSorting": [[8, 'asc'],[3, 'desc']]
+		"aaSorting": [[8, 'asc'],[3, 'desc']],
+		"oLanguage": {
+			"sLengthMenu:": "Display _MENU_ records per page",
+			"sSearch": "Keyword Filter:"
+		}
 	});
 	
 	//conditional columns as necessary

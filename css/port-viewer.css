@@ -577,6 +577,20 @@ top: 8px;
 left: 10px;
 }
 
+#topics_table_wrapper #topics_table_length,
+#topics_table_wrapper #topic_operator_container {
+position: relative;
+top: 0;
+left: 0;
+float: left;
+}
+
+#topics_table_wrapper #topic_operator_container { clear: left; }
+
+#topics_table_wrapper .ui-toolbar {
+height: auto;
+}
+
 #topic_operator_container {
 position: absolute;
 top: 8px;
