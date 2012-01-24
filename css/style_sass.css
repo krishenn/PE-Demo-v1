@@ -1,0 +1,106 @@
+/******************************************************/
+body {
+  background-color: white;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#cccccc), to(white));
+  background-image: -webkit-linear-gradient(top, #cccccc, white);
+  background-image: -moz-linear-gradient(top, #cccccc, white);
+  background-image: -ms-linear-gradient(top, #cccccc, white);
+  background-image: -o-linear-gradient(top, #cccccc, white);
+  background-image: linear-gradient(top, #cccccc, white);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#cccccc', EndColorStr='white');
+  margin-bottom: 10px;
+  background-repeat: no-repeat;
+  color: #333333; }
+
+h1 {
+  font-size: 18pt;
+  color: #369; }
+
+a {
+  cursor: pointer; }
+
+#header {
+  background: url("static/header.png");
+  height: 176px;
+  width: 1000px;
+  margin: 0 auto; }
+
+#container {
+  background: url("static/container_shadow.png");
+  position: relative;
+  padding: 25px;
+  margin: 0 auto;
+  width: 950px; }
+  #container select {
+    margin: 5px 0px;
+    padding: 3px;
+    font-size: 8pt;
+    font-family: Arial;
+    font-color: #666666;
+    border: 1px #999999 solid; }
+  #container select.sel {
+    width: 325px;
+    height: 140px; }
+  #container #tabs {
+    overflow: hidden;
+    padding-bottom: 5px; }
+  #container #menu {
+    margin-bottom: 25px; }
+    #container #menu span {
+      font-size: 9pt;
+      margin-left: 5px;
+      color: #404040; }
+    #container #menu #leftOption1 input {
+      font-size: 8pt;
+      padding: 2px 6px;
+      border: 1px solid #999999;
+      background: #d9d9d9;
+      display: inline-block;
+      color: #666666; }
+      #container #menu #leftOption1 input:hover {
+        color: #404040;
+        background: #bfbfbf; }
+    #container #menu #leftOption4 {
+      margin-top: 10px;
+      padding-top: 5px;
+      border-top: dashed 1px #999999;
+      text-align: center; }
+      #container #menu #leftOption4 input {
+        font-size: 20px;
+        padding: 5px 20px;
+        border: 1px solid #999999;
+        background: #d9d9d9;
+        display: inline-block;
+        margin: 10px;
+        color: #666666; }
+        #container #menu #leftOption4 input:hover {
+          color: #404040;
+          background: #bfbfbf; }
+      #container #menu #leftOption4 #message {
+        margin-top: 10px;
+        display: none;
+        color: #990000;
+        background: #ffcccc;
+        padding: 5px 10px;
+        font-size: 9pt; }
+    #container #menu p {
+      margin-top: 10px;
+      margin-bottom: 5px; }
+
+#footer {
+  background: url("static/shadow_bottom.png");
+  height: 11px;
+  position: relative;
+  margin: 0 auto;
+  width: 1000px; }
+
+#dtable {
+  font-size: 8pt; }
+  #dtable .dataInnerts b {
+    font-weight: bolder;
+    font-size: 110%;
+    display: block;
+    margin: 5px 0px; }
+  #dtable .dataInnerts p {
+    margin-left: 5px;
+    margin-bottom: 5px; }

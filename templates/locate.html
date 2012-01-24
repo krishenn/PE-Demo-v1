@@ -1,0 +1,262 @@
+<div class="port">
+
+<ul class="port-accordian">
+<!-- --------------------------------------------------------------------------------------------------------------------------------------------------------- Chunk 02 - TOPICS -->
+<li class="port-item expanded topics" id="topics_container">
+	<div class="portheader" id="topics_summary">
+		<h2><a href="#">Topics <span>Filter</span></a></h2>
+		<div id="topics_summary_expanded">&nbsp;</div>
+		<div id="topics_summary_collapsed">
+			<ul class="cols">
+				<li class="left">
+					<strong><em id="topics_summary_count_selected"></em> of <u id="topics_summary_count"></u></strong>
+					<strong>Timing: <em id="topics_summary_filter_year_from"></em> - <em id="topics_summary_filter_year_to"></em></strong>
+				</li>
+				<li class="right" id="topics_summary_selected"></li>
+			</ul>		
+			<a href="#" class="change-selection" id="topics_summary_change">Change Selection</a>
+		</div>		
+	</div><!-- /portheader -->
+	<div id="topics">
+	<div class="port-data"><div class="port-data-inner">
+	<form id="queryform">
+	<h2>Expertise Locator</h2>
+	<div class="intro">
+		<p>This tool allows you to locate researchers based on their expertise. Using the "ANY" option in the Inclusion dropdown yields researchers with awards in ANY of the Topics you select (check) in the list below. Using the "ALL" inclusion limits your selection to those researchers with awards in ALL of the topics you select.</p>
+	</div><!-- /intro -->
+
+	<div class="topic-options">
+
+	  <ul>
+	  <li class="first">
+	  	<u>Topic options:</u>
+	  </li>
+	  <li>
+		<strong>From</strong>
+		<select name="filter_year_from">
+			<option value="2007" selected="selected">2007</option>
+			<option value="2008">2008</option>
+			<option value="2009">2009</option>
+			<option value="2010">2010</option>
+			<option value="2011">2011</option>
+		</select> 
+		<strong>to</strong>
+		<select name="filter_year_to">
+			<option value="2007">2007</option>
+			<option value="2008">2008</option>
+			<option value="2009">2009</option>
+			<option value="2010" selected="selected">2010</option>
+			<option value="2011">2011</option>
+		</select> 		  
+	  </li>
+	  <li style="display:none;">
+		<label><input type="radio" checked="true" name="filter_status" value="completed" /> Completed Actions</label>		  
+	  </li>
+	  <li class="last">
+	    <a href="#" id="queryform_submit" class="buttonGreen">Update Topic List</a>		  
+	  </li>
+	  </ul>
+
+		<span id="message"></span>
+	  </div><!-- /topic-options -->
+	</form>
+	<form>
+	<div class="datacols">
+		<div class="datacol-left" id="topics_tabs_container">
+		</div><!-- /datacol-left -->
+		<div class="datacol-right">
+			<div class="summary"><div class="summary-inner">
+				<h2>Quick Selection Summary <a href="#" id="topics_selection_clear">Clear Selection</a></h2>
+				<p class="intro">The below reflects a summary of the Topics you  select/ed on the left. Click the triangle controls for expanded summaries or click the 'Explore'  buttons to analyze your selection deeper.</p>
+				
+<div class="summary-block">
+	<div class="summary-header">
+		<h3>Researchers (<span id="topics_summary_researchers_count"></span>)</h3>
+		<a href="#" class="explore" id="topics_submit_researchers">Explore</a>
+	</div>
+</div><!-- /summary-block -->
+
+<div id="topics_summary_container"></div>
+
+			</div></div><!-- /summary -->
+		</div><!-- /datacol-right -->
+	</div><!-- /datacols -->
+	
+	
+	</div></div><!-- /port-data -->
+	</form>
+	</div>
+</li><!-- /port-item -->
+<!-- --------------------------------------------------------------------------------------------------------------------------------------------------------- Chunk 03 - DIVISIONS -->
+<li class="port-item collapsed data" id="results_container">
+	<div class="portheader">
+	<h2><a href="#">Expertise Locator</a></h2>
+	</div><!-- /portheader -->
+	<div class="port-data"><div class="port-data-inner">
+	<div class="datacols" id="data_container">
+		<div class="datacol-left"><div class="datacol-left-inner">
+		<div class="data-tabs">
+			<div class="tab-nav" id="data_tabs">
+				<ul>
+					<li><a href="#data_tabs_researchers">Researchers</a></li>
+				</ul>
+				<div class="data-tab data-tab1" id="data_tabs_researchers">
+					<div class="table-holder">
+						<img id="researchers_loader" class="loader" style="display:none" src="img/ajax-loader.gif" />						
+						<table id="researchers_table" class="datatables"></table>
+					</div><!-- /table-holder -->
+					<div class="table-footnotes">
+						<ul>
+						<li>Topic Relevance: each proposal is assigned a total of 4 Topics. The Topic set is either based on a) the top/most relevant topic for each proposal, or b) based on all four topics assigned to proposals.</li>
+						<li><sup>*</sup> Count reflects the number of proposals within your filter criteria. Complete/unfiltered listing of proposals since 2007 are itemized in the Details view.</li>
+						<li><sup>**</sup> IDs reflect the proposal ID linked to NSF.gov (public view) or eJacket (internal NSF users).</li>
+						</ul>
+					</div><!-- /table-footnotes -->				
+				</div><!-- /data-researchers -->
+			</div><!-- /tab-nav -->
+		</div><!-- /data-tabs -->
+					
+		</div></div><!-- /datacol-left -->
+		<div class="datacol-right">
+			<div class="summary">
+				<div id="data_summary_researchers" class="topic-selection-summary-wrap">
+
+				     <h3>Selection Summary</h3>
+				       <p>The below reflects a summary of the items you 
+				         selected on the left.</p>
+
+			      <table id="pi-selection-summary-table" class="topic-selection-summary-table">
+			         <tr class="heading">
+			           <td class="label"><strong>Researchers Selected</strong></td>
+			           <td><div class="header-row-wrap"><strong><span id="summary_pis">0</span></strong></div></td>
+			         </tr>
+			         <tr>
+			           <td class="label">&nbsp;</td>
+			           <td>&nbsp;</td>
+			         </tr>
+			         <tr>
+			           <td class="label" colspan="2"><strong>Total Submitted by Researcher</strong></td>
+			         </tr>
+			         <tr>
+			           <td class="label">1st</td>
+			           <td class="value" id="summary_rankedpis_bypropcount_1"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">2nd</td>
+			           <td class="value" id="summary_rankedpis_bypropcount_2"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">3rd</td>
+			           <td class="value" id="summary_rankedpis_bypropcount_3"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">4th</td>
+			           <td class="value" id="summary_rankedpis_bypropcount_4"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">5th</td>
+			           <td class="value" id="summary_rankedpis_bypropcount_5"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">&nbsp;</td>
+			           <td>&nbsp;</td>
+			         </tr>
+			         <tr>
+			           <td class="label" colspan="2"><strong>Awarded (qty.) by Researcher</strong></td>
+			         </tr>
+			         <tr>
+			           <td class="label">1st</td>
+			           <td class="value" id="summary_rankedpis_byawardcount_1"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">2nd</td>
+			           <td class="value" id="summary_rankedpis_byawardcount_2"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">3rd</td>
+			           <td class="value" id="summary_rankedpis_byawardcount_3"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">4th</td>
+			           <td class="value" id="summary_rankedpis_byawardcount_4"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">5th</td>
+			           <td class="value" id="summary_rankedpis_byawardcount_5"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">&nbsp;</td>
+			           <td>&nbsp;</td>
+			         </tr>
+			         <tr>
+			           <td class="label" colspan="2"><strong>Awarded ($) by Researcher</strong></td>
+			         </tr>
+			         <tr>
+			           <td class="label">1st</td>
+			           <td class="value" id="summary_rankedpis_byawardfunding_1"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">2nd</td>
+			           <td class="value" id="summary_rankedpis_byawardfunding_2"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">3rd</td>
+			           <td class="value" id="summary_rankedpis_byawardfunding_3"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">4th</td>
+			           <td class="value" id="summary_rankedpis_byawardfunding_4"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">5th</td>
+			           <td class="value" id="summary_rankedpis_byawardfunding_5"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">&nbsp;</td>
+			           <td>&nbsp;</td>
+			         </tr>
+			         <tr>
+			           <td class="label" colspan="2"><strong>Avg. Award/Grant by Researcher</strong></td>
+			         </tr>
+			         <tr>
+			           <td class="label">1st</td>
+			           <td class="value" id="summary_rankedpis_byavgawardfunding_1"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">2nd</td>
+			           <td class="value" id="summary_rankedpis_byavgawardfunding_2"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">3rd</td>
+			           <td class="value" id="summary_rankedpis_byavgawardfunding_3"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">4th</td>
+			           <td class="value" id="summary_rankedpis_byavgawardfunding_4"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">5th</td>
+			           <td class="value" id="summary_rankedpis_byavgawardfunding_5"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">&nbsp;</td>
+			           <td>&nbsp;</td>
+			         </tr>
+			       </table>
+				</div>
+			</div><!-- /summary -->
+		</div><!-- /datacol-right -->
+	</div><!-- /datacols -->
+	
+	
+	</div></div><!-- /port-data -->
+</li><!-- /port-item -->
+
+</ul>
+
+
+</div><!-- /full-width --><br style="clear: left;" />
+
+<script src="js/funcs.js"></script>
+<script src="js/locate.js"></script>
+

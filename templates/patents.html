@@ -1,0 +1,41 @@
+<div class="patents">
+	<h2>Patents</h2>
+	<div class="intro">
+	<p>This tool shows Patents that were received by NSF/NIH grantees. View Patent data by Division and/or Program Element Codes. The patents displayed are associated with funded NSF PI's. Patents were linked to researchers/inventors by means of fuzzy string matching (PI name weighted by location) within the USPTO derived data base, and is subject to error based on those parameters. Initial patents displayed are NOT necessarily a function of NSF grants.</p>
+	<p><strong>Instructions:</strong> use the freeform text box or the dropdown menu in the first row to select a division. Your selection will appear in the second row; use the red ‘X’ icons to delete selected divisions. Optionally, specify a Program Element Code. Click the “Show Patents” button to continue.</p>
+	<p><strong>Note:</strong> choosing more than one Division or changing the time span to 10 years will significantly slow things down. For best results, use one Division at a time.</p>
+	</div><!-- /intro -->
+</div>
+
+<form id="queryform" class="form-patents-select">
+
+<div class="item-wrap"><h4>Select Divisions</h4><input name="filter_org" placeholder="Type the name of a division"> OR <select name="orgs_list"><option value="">Select One</option></select></div>
+
+<div class="item-wrap selected-divs"><h4>Selected Divisions</h4> <ul id="selected_orgs"></ul></div>
+
+<div class="item-wrap select-time"><h4>Select Time</h4><select name="filter_year"><option value="2005-2011" selected>Last 5 years</option><option value="2000-2011">Last 10 years</option></select>
+	<div class="select-pges">
+		<h4>Prg. Element Code(s)</h4>
+		<div class="select-pges-inner">
+			<label><input type="radio" name="filter_pge_type" value="all" checked="true" /> Include All</label> <label><input type="radio" name="filter_pge_type" value="some" /> Limit to PGEs:</label> <input type="text" name="filter_pge" /> <small>(separate with commas)</small>
+		</div><!-- /select-pges-inner -->
+	</div><!-- /select-pges -->
+</div><!-- /select-time -->
+
+<div class="form-submit"><a href="#" class="change-selection" id="queryform_submit">Show Patents</a></div>
+</form>
+<br style="clear: left" />
+<img id="patents_loader" class="loader" style="display:none" src="img/ajax-loader.gif" />
+<div id="patents">
+<table id="patents_table" class="datatables"></table>
+
+<div class="table-footnotes">
+	<ul>
+		<li><sup>1</sup>Patents are linked to NSF grantees by fuzzy string matching (weighted heavily by name and location). The data is based on the Patent database, NSF and NIH Grants, and Patent Applications.</li>
+	</ul>
+</div><!-- /table-footnotes -->				
+</div><!-- /patents -->
+
+<script src="js/lib/jquery-placeholder/jquery.placeholder.js"></script>
+<script src="js/funcs.js"></script>
+<script src="js/patents.js"></script>

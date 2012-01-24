@@ -1,0 +1,41 @@
+<div class="about">
+	<div class="intro">
+	  <h1>
+	    About the Topic Modeling Approach</h1>
+	  <p><a href="about.php">Overview</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="about_starmetrics.php">Star Metrics</a>&nbsp;&nbsp;|&nbsp;&nbsp;Topic Modeling&nbsp;&nbsp;|&nbsp;&nbsp;<a href="about_patents.php">Patents Database</a></p>
+	</div><!-- /intro -->
+	<p>&nbsp;</p>
+	<h2 style="text-align: center">
+	  The Rationale for Using Topic Models</h2>
+	<span style="display:block; float:right; width: 220px; margin-left: 10px; text-align: center; font-size: 12px;"><img src="img/primer-thumb-v1.png"><br /><a href="uploads/Topic_Modeling_Primer.pdf" target="_blank">View</a> the 10-Slide Topic Modeling Primer by David Newman.</span>
+	<p>
+	  The approach was implemented as a result of a two year project undertaken on behalf of two NSF Advisory Committees – Computer and Information Science and Engineering (CISE) and Social, Behavioral and Economic Sciences (SBE).  The Subcommittee participants were charged with identifying and demonstrating techniques and tools that could characterize a specific set of proposal and award portfolios. In addition, the subcommittee was asked to provide recommendations on ways that NSF could better structure existing data, make use of existing machine learning, analysis, and visualization techniques to complement human expertise and better characterize its programmatic data. </p>
+	<p>
+	  As a part of this work, ten research teams, each directed by a member of the subcommittee, participated in an experimental effort in which NSF proposals were analyzed in a secure environment, using the latest techniques for information analysis and visual analytics. The teams interacted with program managers from NSF and from other parts of the federal government in order to produce their demonstration analyses. [1]</p>
+	<h3>
+	  What to look for</h3>
+	<p>
+	  Topic modeling is one way to categorize proposals themselves. This approach provides a powerful and flexible framework for representing, summarizing and analyzing the contents of large document collections. The topic model is a probabilistic model that automatically learns a set of topics (categories) that describe a collection of documents, based on the words in those documents. Each document is considered to consist of a small number of topics, each of which is dominated by only a fraction of all possible words. As such, the topics define a simplified representation of the documents. A topic model of a document collection is a highly useful representation, but is not necessarily the only or even the best, representation. </p>
+    <h2 style="text-align: center">
+      Technical Details</h2>
+    <p>
+      The topics were modeled based on a collection of titles and project description from all NSF proposals from 2000-2011. This collection included over 100,000 NSF proposals. The topic model was computed using the widely-used Gibbs sampled topic model [3] using a threshold of 1000 topics. Each topic is a “bag of words” and represents, in descending order, the relative frequency with which each word co-occurs in the topic.  Each proposal (or award) can have multiple topics.  The Gibbs approach provides the probability that each topic is represented in the proposal (or award).  The topic that is provided in the Portfolio Explorer is the primary topic.  Program managers can see secondary or co-occurring topics through additional selections.   Information about co-occurring topics is also provided in the detailed views of awards and proposals.</p>
+    <p>
+      Two-word topic labels were generated manually by NSF program managers and AAAS fellows.  Please send suggested revisions to us at <a href="mailto:PEfeedback@nsf.gov">PEfeedback@nsf.gov</a></p>
+    <p>
+      Future versions of this tool will provide both program managers and researchers with the opportunity to revise the topics automatically.</p>
+    <p>&nbsp;</p>
+    <h2 style="text-align: center">For more information:</h2>
+    <p>
+      [1]  <a href="uploads/CISE_SBE-Discovery-in-a-Research-Portfolio-final-report.pdf" target="_blank">National Science Foundation CISE and SBE AC Subcommittee "Tools for Structuring, Analyzing, Visualizing and Interacting with Proposal and Award Portfolios", Final Report</a>
+      [2] Blei, D. M., Ng, A. Y., and Jordan, M. I. (2003). Latent Dirichlet Allocation. Journal of Machine Learning Research, 3:993-1022. 
+      [3] Griffiths, T., &amp; Steyvers, M. (2004). Finding Scientific Topics. Proceedings of the National Academy of Sciences, 101 (suppl. 1), 5228-5235.
+      [4] Newman, D., A. Asuncion, P. Smyth, M. Welling. &quot;Distributed Inference for Latent Dirichlet Allocation.&quot; Neural Information Processing Systems (NIPS), 2007. 
+      [5] Newman, D Topic Modeling NSF Proposals: Results from the Enclave 
+      [6]  Newman, D EAGER: Unified categories for describing and quantifying scientific research, NSF award 1106434</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p style="text-align: right"><a href="about_patents.php">Patents Database &gt;</a></p>
+<p>&nbsp; </p>
+	<p>&nbsp; </p>
+</div>

@@ -1,0 +1,713 @@
+<div class="port">
+
+<ul class="port-accordian">
+<!-- --------------------------------------------------------------------------------------------------------------------------------------------------------- Chunk 01 - DIVISIONS -->
+<li class="port-item expanded select" id="divisions_container">
+	<div class="portheader" id="queryform_summary">
+	<h2><a href="#">Select</a></h2>
+		<div id="queryform_summary_expanded">
+			<p>This tool describes the structure of divisional and program investments by topic.</p>
+		</div>
+		<div id="queryform_summary_collapsed">
+			<ul class="cols">
+				<li class="left">
+					<strong>Divisions: (<em id="queryform_summary_orgs_count_selected"></em> of <u id="queryform_summary_orgs_count"></u>) <span id="queryform_summary_orgs_selected"></span></strong>
+					<strong>PGE Codes: <!-- (<em>1,234</em> of <u>1,234</u>) --><span id="queryform_summary_filter_pge"></span></strong>
+				</li>
+				<li class="right">
+					<strong>Topics: <em id="queryform_summary_filter_topicconfidence"></em></strong>
+					<strong>Timing: <em id="queryform_summary_filter_year_from"></em> - <em id="queryform_summary_filter_year_to"></em> <span id="queryform_summary_filter_status"></span></strong>
+				</li>
+			</ul>
+			<a href="#" class="change-selection" id="queryform_summary_change">Change Selection</a>
+		</div>
+	</div><!-- /portheader -->
+	<form id="queryform">
+	<div class="port-data"><div class="port-data-inner">
+	<h2>Select one or more NSF Division(s)</h2>
+	<div class="intro">
+	<p>Click the "View Topics" button to continue. Optionally, limit the Topics shown by selecting one or more Divisions and/or Program Element Codes. Click the arrows in the last column to show/hide Divisional summary information.</p>
+	</div>
+	<div class="datacols">
+		<div class="datacol-left">
+			<div class="tab-nav" id="divisions_tabs">
+				<ul>
+					<li><a href="#divisions_tab1">NSF Divisions</a></li>
+				</ul>
+				<div class="data-tab data-tab1 tab-container" id="divisions_tab1">
+					<div class="table-holder">
+						<img id="divisions_loader" class="loader" style="display:none" src="img/ajax-loader.gif" />						
+						<table id="divisions_table" class="datatables"></table>
+					</div><!-- /table-holder -->
+					<div class="table-footnotes">
+						<ul>
+							<li><sup>1</sup> Topic Relevance: each proposal is assigned a total of 4 Topics. The Topic set is either based on a) the top/most relevant topic for each proposal, or b) based on all four topics assigned to proposals.</li>
+						</ul>
+					</div><!-- /table-footnotes -->				
+				</div><!-- /tab-container -->
+			</div><!-- /tab-nav -->			
+					
+		</div><!-- /datacol-left -->
+		<div class="datacol-right">
+			<div class="propfilters"><div class="propfilters-inner">
+				<h3>Filter</h3>
+				<p>The data on the left and on the screens that follow are limited by the Filter criteria below.</p>
+				
+				<ul id="filter_status">
+					<li><input type="radio" checked="true" name="filter_status" value="completed" id="filter_status_completed" /> <label for="filter_status_completed"></label></li>
+					<li><input type="radio" name="filter_status" value="pending" id="filter_status_pending" /> <label for="filter_status_pending">Other</label></li>
+				</ul>
+				
+				<h4>Time</h4> <span id="filter_year">Current Fiscal Year <span id="fiscalyear"></span></span>			
+				<div id="filter_year_options">
+				<select name="filter_year_from">
+						<option value="2007" selected="selected">2007</option>
+						<option value="2008">2008</option>
+						<option value="2009">2009</option>
+						<option value="2010">2010</option>
+						<option value="2011">2011</option>
+				</select>
+				to
+				<select name="filter_year_to">
+						<option value="2007">2007</option>
+						<option value="2008">2008</option>
+						<option value="2009">2009</option>
+						<option value="2010" selected="selected">2010</option>
+						<option value="2011">2011</option>
+				</select>
+				</div>
+				
+				<h4>Prg. Element Code(s)</h4>
+				<ul>
+					<li><label><input type="radio" name="filter_pge_type" value="all" checked="true" /> Include All</label></li>
+					<li><label><input type="radio" name="filter_pge_type" value="some" /> Limit to PGEs:</label> <input type="text" name="filter_pge" /><span>(separate with commas)</span></li>
+				</ul>
+				
+				<h4>Topic Relevance<sup>1</sup></h4>
+				<select name="filter_topicconfidence">
+				<option value="t1" selected>Most Relevant Topic</option>
+				<!--<option value="t2">2nd Level Relevance</option>
+				<option value="t3">3rd Level Relevance</option>
+				<option value="t4">4th Level Relevance</option>-->
+				<option value="t">Any Relevance</option>
+				</select>
+			</div></div><!-- /propfilters -->
+			<div class="rcol-action-button">
+			<span class="left"><a href="#" id="queryform_submit_divisions">Update Divisions List</a> <em>(this will clear your current selection)</em></span>
+			<span class="right"><a href="#" id="queryform_submit_topics">View Topics</a></span>
+			</div>
+		</div><!-- /datacol-right -->
+	</div><!-- /datacols -->
+	
+	
+	</div></div><!-- /port-data -->
+	</form>
+</li><!-- /port-item -->
+
+<!-- --------------------------------------------------------------------------------------------------------------------------------------------------------- Chunk 02 - TOPICS -->
+<li class="port-item collapsed topics" id="topics_container">
+	<div class="portheader" id="topics_summary">
+		<h2><a href="#">Topics <span>Filter</span></a></h2>
+		<div id="topics_summary_expanded">&nbsp;</div>
+		<div id="topics_summary_collapsed">
+			<ul class="cols">
+				<li class="left">
+					<strong><em id="topics_summary_count_selected"></em> of <u id="topics_summary_count">23</u></strong>
+				</li>
+				<li class="right" id="topics_summary_selected"></li>
+			</ul>		
+			<a href="#" class="change-selection" id="topics_summary_change">Change Selection</a>
+		</div>		
+	</div><!-- /portheader -->
+	<form id="topics">
+	<div class="port-data"><div class="port-data-inner">
+	<div class="intro">
+	<p>Include proposals for selected Topics. Use the Summary sidebar to explore your selection.</p>
+	</div>
+	<div class="datacols">
+		<div class="datacol-left" id="topics_tabs_container">
+		</div><!-- /datacol-left -->
+		<div class="datacol-right">
+			<div class="summary"><div class="summary-inner">
+				<h2>Quick Selection Summary <a href="#" id="topics_selection_clear">Clear Selection</a></h2>
+				<p class="intro">The below reflects a summary of the Topics you  select/ed on the left. Click the triangle controls for expanded summaries or click the 'Explore'  buttons to analyze your selection deeper.</p>
+				
+<div id="topics_summary_container"></div>
+
+<div class="summary-block">
+	<div class="summary-header">
+		<h3>Institutions (<span id="topics_summary_institutions_count"></span>)</h3>
+		<a href="#" class="explore" id="topics_submit_institutions">Explore</a>
+	</div>
+</div><!-- /summary-block -->
+
+
+<div class="summary-block">
+	<div class="summary-header">
+		<h3>Researchers (<span id="topics_summary_researchers_count"></span>)</h3>
+		<a href="#" class="explore" id="topics_submit_researchers">Explore</a>
+	</div>
+</div><!-- /summary-block -->
+
+			</div></div><!-- /summary -->
+		</div><!-- /datacol-right -->
+	</div><!-- /datacols -->
+	
+	
+	</div></div><!-- /port-data -->
+	</form>
+</li><!-- /port-item -->
+<!-- --------------------------------------------------------------------------------------------------------------------------------------------------------- Chunk 03 - DIVISIONS -->
+<li class="port-item collapsed data" id="results_container">
+	<div class="portheader">
+	<h2><a href="#">Portfolio Viewer</a></h2>
+	</div><!-- /portheader -->
+	<div class="port-data"><div class="port-data-inner">
+	<div class="datacols" id="data_container">
+		<div class="datacol-left"><div class="datacol-left-inner">
+		<div class="data-tabs">
+			<div class="tab-nav" id="data_tabs">
+				<ul>
+					<li><a href="#data_tabs_proposed">Other</a></li>
+					<li><a href="#data_tabs_declines">Declines</a></li>
+					<li><a href="#data_tabs_awards">Awards</a></li>
+					<li><a href="#data_tabs_researchers">Researchers</a></li>
+					<li><a href="#data_tabs_institutions">Institutions</a></li>
+				</ul>
+				<div class="data-tab data-tab1" id="data_tabs_proposed">
+					<div class="table-holder">
+						<img id="proposed_loader" class="loader" style="display:none" src="img/ajax-loader.gif" />						
+						<table id="proposed_table" class="datatables"></table>
+					</div><!-- /table-holder -->
+					<div class="table-footnotes">
+						<ul>
+						<li><sup>1</sup> Topic Relevance: each proposal is assigned a total of 4 Topics. The Topic set is either based on a) the top/most relevant topic for each proposal, or b) based on all four topics assigned to proposals.</li>
+						</ul>
+					</div><!-- /table-footnotes -->				
+				</div><!-- /data-declines -->
+				<div class="data-tab data-tab1" id="data_tabs_declines">
+					<div class="table-holder">
+						<img id="declines_loader" class="loader" style="display:none" src="img/ajax-loader.gif" />						
+						<table id="declines_table" class="datatables"></table>
+					</div><!-- /table-holder -->
+					<div class="table-footnotes">
+						<ul>
+						<li><sup>1</sup> Topic Relevance: each proposal is assigned a total of 4 Topics. The Topic set is either based on a) the top/most relevant topic for each proposal, or b) based on all four topics assigned to proposals.</li>
+						</ul>
+					</div><!-- /table-footnotes -->				
+				</div><!-- /data-declines -->
+				<div class="data-tab data-tab1" id="data_tabs_awards">
+					<div class="table-holder">
+						<img id="awards_loader" class="loader" style="display:none" src="img/ajax-loader.gif" />						
+						<table id="awards_table" class="datatables"></table>
+					</div><!-- /table-holder -->
+					<div class="table-footnotes">
+						<ul>
+						<li><sup>1</sup> Topic Relevance: each proposal is assigned a total of 4 Topics. The Topic set is either based on a) the top/most relevant topic for each proposal, or b) based on all four topics assigned to proposals.</li>
+						</ul>
+					</div><!-- /table-footnotes -->				
+				</div><!-- /data-awards -->
+				<div class="data-tab data-tab1" id="data_tabs_researchers">
+					<div class="table-holder">
+						<img id="researchers_loader" class="loader" style="display:none" src="img/ajax-loader.gif" />						
+						<table id="researchers_table" class="datatables"></table>
+					</div><!-- /table-holder -->
+					<div class="table-footnotes">
+						<ul>
+						<li><sup>1</sup> Topic Relevance: each proposal is assigned a total of 4 Topics. The Topic set is either based on a) the top/most relevant topic for each proposal, or b) based on all four topics assigned to proposals.</li>
+						<li><sup>*</sup> Count reflects the number of proposals within your filter criteria. Complete/unfiltered listing of proposals since 2007 are itemized in the Details view.</li>
+						<li><sup>**</sup> IDs reflect the proposal ID linked to NSF.gov (public view) or eJacket (internal NSF users).</li>
+						</ul>
+					</div><!-- /table-footnotes -->				
+				</div><!-- /data-researchers -->
+				<div class="data-tab data-tab1" id="data_tabs_institutions">
+					<div class="table-holder">
+						<img id="institutions_loader" class="loader" style="display:none" src="img/ajax-loader.gif" />						
+						<table id="institutions_table" class="datatables"></table>
+					</div><!-- /table-holder -->
+					<div class="table-footnotes">
+						<ul>
+						<li><sup>1</sup> Topic Relevance: each proposal is assigned a total of 4 Topics. The Topic set is either based on a) the top/most relevant topic for each proposal, or b) based on all four topics assigned to proposals.</li>
+						</ul>
+					</div><!-- /table-footnotes -->				
+				</div><!-- /data-institutions -->
+			</div><!-- /tab-nav -->
+		</div><!-- /data-tabs -->
+					
+		</div></div><!-- /datacol-left -->
+		<div class="datacol-right">
+			<div class="summary">
+				<div id="data_summary_proposed" class="topic-selection-summary-wrap">
+					<h3>Selection Summary</h2>
+					<p>The below reflects a summary of the items you 
+					         selected on the left.</p>
+				
+					<table id="prop-selection-summary-table" class="topic-selection-summary-table">
+					  <tr class="heading">
+					    <td class="label"><strong>Selected</strong></td>
+					    <td><div class="header-row-wrap"><strong><span id="summary_proposed">0</span></strong></div></td>
+					  </tr>
+					  <tr>
+					    <td class="label">Date first</td>
+					    <td class="value" id="summary_proposed_datefirst"></td>
+					  </tr>
+					  <tr>
+					    <td class="label">Date last</td>
+					    <td class="value" id="summary_proposed_datelast"></td>
+					  </tr>
+					  <tr>
+					    <td class="label">&nbsp;</td>
+					    <td>&nbsp;</td>
+					  </tr>
+					  <tr>
+					    <td class="label">Total Selection Request</td>
+					    <td class="value" id="summary_proposed_funding_total">0</td>
+					  </tr>
+					  <tr>
+					    <td class="label">&nbsp;</td>
+					    <td>&nbsp;</td>
+					  </tr>
+					  <tr>
+					    <td class="label">Top Request ($)</td>
+					    <td class="value" id="summary_rankedproposed_byfunding_1"></td>
+					  </tr>
+					  <tr>
+					    <td class="label">2nd</td>
+					    <td class="value" id="summary_rankedproposed_byfunding_2"></td>
+					  </tr>
+					  <tr>
+					    <td class="label">3rd</td>
+					    <td class="value" id="summary_rankedproposed_byfunding_3"></td>
+					  </tr>
+					  <tr>
+					    <td class="label">4th</td>
+					    <td class="value" id="summary_rankedproposed_byfunding_4"></td>
+					  </tr>
+					  <tr>
+					    <td class="label">&nbsp;</td>
+					    <td>&nbsp;</td>
+					  </tr>
+					  <tr>
+					    <td class="label">Smallest Request</td>
+					    <td class="value" id="summary_proposed_funding_min"></td>
+					  </tr>
+					  <tr>
+					    <td class="label">&nbsp;</td>
+					    <td>&nbsp;</td>
+					  </tr>
+					</table>
+				</div>
+				<div id="data_summary_declines" class="topic-selection-summary-wrap">
+					<h3>Selection Summary</h2>
+					<p>The below reflects a summary of the items you 
+					         selected on the left.</p>
+				
+					<table id="prop-selection-summary-table" class="topic-selection-summary-table">
+					  <tr class="heading">
+					    <td class="label"><strong>Selected</strong></td>
+					    <td><div class="header-row-wrap"><strong><span id="summary_props">0</span></strong></div></td>
+					  </tr>
+					  <tr>
+					    <td class="label">Date first</td>
+					    <td class="value" id="summary_prop_datefirst"></td>
+					  </tr>
+					  <tr>
+					    <td class="label">Date last</td>
+					    <td class="value" id="summary_prop_datelast"></td>
+					  </tr>
+					  <tr>
+					    <td class="label">&nbsp;</td>
+					    <td>&nbsp;</td>
+					  </tr>
+					  <tr>
+					    <td class="label">Total Selection Request</td>
+					    <td class="value" id="summary_prop_funding_total">0</td>
+					  </tr>
+					  <tr>
+					    <td class="label">&nbsp;</td>
+					    <td>&nbsp;</td>
+					  </tr>
+					  <tr>
+					    <td class="label">Top Request ($)</td>
+					    <td class="value" id="summary_rankedprops_byfunding_1"></td>
+					  </tr>
+					  <tr>
+					    <td class="label">2nd</td>
+					    <td class="value" id="summary_rankedprops_byfunding_2"></td>
+					  </tr>
+					  <tr>
+					    <td class="label">3rd</td>
+					    <td class="value" id="summary_rankedprops_byfunding_3"></td>
+					  </tr>
+					  <tr>
+					    <td class="label">4th</td>
+					    <td class="value" id="summary_rankedprops_byfunding_4"></td>
+					  </tr>
+					  <tr>
+					    <td class="label">&nbsp;</td>
+					    <td>&nbsp;</td>
+					  </tr>
+					  <tr>
+					    <td class="label">Smallest Request</td>
+					    <td class="value" id="summary_prop_funding_min"></td>
+					  </tr>
+					  <tr>
+					    <td class="label">&nbsp;</td>
+					    <td>&nbsp;</td>
+					  </tr>
+					</table>
+				</div>
+				<div id="data_summary_awards" class="topic-selection-summary-wrap">
+
+				     <h3>Selection Summary</h3>
+				       <p>The below reflects a summary of the items you 
+				         selected on the left.</p>
+
+			       <table id="grant-selection-summary-table" class="topic-selection-summary-table">
+			         <tr class="heading">
+			           <td class="label"><strong>Grants Selected</strong></td>
+			           <td><div class="header-row-wrap"><strong><span id="summary_grants">0</span></strong></div></td>
+			         </tr>
+			         <tr>
+			           <td class="label">Date first</td>
+			           <td class="value" id="summary_datefirst"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">Date last</td>
+			           <td class="value" id="summary_datelast"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">&nbsp;</td>
+			           <td>&nbsp;</td>
+			         </tr>
+			         <tr>
+			           <td class="label">Total Selection Award</td>
+			           <td class="value" id="summary_funding_total">0</td>
+			         </tr>
+			         <tr>
+			           <td class="label">&nbsp;</td>
+			           <td>&nbsp;</td>
+			         </tr>
+			         <tr>
+			           <td class="label">Top Award ($)</td>
+			           <td class="value" id="summary_rankedgrants_byfunding_1"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">2nd</td>
+			           <td class="value" id="summary_rankedgrants_byfunding_2"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">3rd</td>
+			           <td class="value" id="summary_rankedgrants_byfunding_3"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">4th</td>
+			           <td class="value" id="summary_rankedgrants_byfunding_4"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">&nbsp;</td>
+			           <td>&nbsp;</td>
+			         </tr>
+			         <tr>
+			           <td class="label">Smallest Award</td>
+			           <td class="value" id="summary_funding_min"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">&nbsp;</td>
+			           <td>&nbsp;</td>
+			         </tr>
+			       </table>
+				</div>
+				<div id="data_summary_researchers" class="topic-selection-summary-wrap">
+
+				     <h3>Selection Summary</h3>
+				       <p>The below reflects a summary of the items you 
+				         selected on the left.</p>
+
+			      <table id="pi-selection-summary-table" class="topic-selection-summary-table">
+			         <tr class="heading">
+			           <td class="label"><strong>Researchers Selected</strong></td>
+			           <td><div class="header-row-wrap"><strong><span id="summary_pis">0</span></strong></div></td>
+			         </tr>
+			         <tr>
+			           <td class="label">&nbsp;</td>
+			           <td>&nbsp;</td>
+			         </tr>
+			         <tr>
+			           <td class="label" colspan="2"><strong>Total Submitted by Researcher</strong></td>
+			         </tr>
+			         <tr>
+			           <td class="label">1st</td>
+			           <td class="value" id="summary_rankedpis_bypropcount_1"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">2nd</td>
+			           <td class="value" id="summary_rankedpis_bypropcount_2"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">3rd</td>
+			           <td class="value" id="summary_rankedpis_bypropcount_3"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">4th</td>
+			           <td class="value" id="summary_rankedpis_bypropcount_4"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">5th</td>
+			           <td class="value" id="summary_rankedpis_bypropcount_5"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">&nbsp;</td>
+			           <td>&nbsp;</td>
+			         </tr>
+			         <tr>
+			           <td class="label" colspan="2"><strong>Awarded (qty.) by Researcher</strong></td>
+			         </tr>
+			         <tr>
+			           <td class="label">1st</td>
+			           <td class="value" id="summary_rankedpis_byawardcount_1"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">2nd</td>
+			           <td class="value" id="summary_rankedpis_byawardcount_2"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">3rd</td>
+			           <td class="value" id="summary_rankedpis_byawardcount_3"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">4th</td>
+			           <td class="value" id="summary_rankedpis_byawardcount_4"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">5th</td>
+			           <td class="value" id="summary_rankedpis_byawardcount_5"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">&nbsp;</td>
+			           <td>&nbsp;</td>
+			         </tr>
+			         <tr>
+			           <td class="label" colspan="2"><strong>Awarded ($) by Researcher</strong></td>
+			         </tr>
+			         <tr>
+			           <td class="label">1st</td>
+			           <td class="value" id="summary_rankedpis_byawardfunding_1"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">2nd</td>
+			           <td class="value" id="summary_rankedpis_byawardfunding_2"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">3rd</td>
+			           <td class="value" id="summary_rankedpis_byawardfunding_3"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">4th</td>
+			           <td class="value" id="summary_rankedpis_byawardfunding_4"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">5th</td>
+			           <td class="value" id="summary_rankedpis_byawardfunding_5"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">&nbsp;</td>
+			           <td>&nbsp;</td>
+			         </tr>
+			         <tr>
+			           <td class="label" colspan="2"><strong>Avg. Award/Grant by Researcher</strong></td>
+			         </tr>
+			         <tr>
+			           <td class="label">1st</td>
+			           <td class="value" id="summary_rankedpis_byavgawardfunding_1"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">2nd</td>
+			           <td class="value" id="summary_rankedpis_byavgawardfunding_2"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">3rd</td>
+			           <td class="value" id="summary_rankedpis_byavgawardfunding_3"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">4th</td>
+			           <td class="value" id="summary_rankedpis_byavgawardfunding_4"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">5th</td>
+			           <td class="value" id="summary_rankedpis_byavgawardfunding_5"></td>
+			         </tr>
+			         <tr>
+			           <td class="label">&nbsp;</td>
+			           <td>&nbsp;</td>
+			         </tr>
+			       </table>
+				</div>
+				<div id="data_summary_institutions" class="topic-selection-summary-wrap">
+
+				     <h3>Selection Summary</h3>
+				       <p>The below reflects a summary of the items you 
+				         selected on the left.</p>
+
+			       <table id="org-selection-summary-table" class="topic-selection-summary-table">
+			         <tr class="heading">
+			           <td class="label"><strong>Institutions Selected</strong></td>
+			           <td><div class="header-row-wrap"><strong><span id="summary_orgs">0</span></strong></div></td>
+			         </tr>
+			         <tr>
+			           <td class="label">&nbsp;</td>
+			           <td>&nbsp;</td>
+			         </tr>
+					<tr>
+					  <td class="label" colspan="2"><strong>Total Submitted by Institute</strong></td>
+					</tr>
+					<tr>
+					  <td class="label">1st</td>
+					  <td class="value" id="summary_rankedorgs_bypropcount_1"></td>
+					</tr>
+					<tr>
+					  <td class="label">2nd</td>
+					  <td class="value" id="summary_rankedorgs_bypropcount_2"></td>
+					</tr>
+					<tr>
+					  <td class="label">3rd</td>
+					  <td class="value" id="summary_rankedorgs_bypropcount_3"></td>
+					</tr>
+					<tr>
+					  <td class="label">4th</td>
+					  <td class="value" id="summary_rankedorgs_bypropcount_4"></td>
+					</tr>
+					<tr>
+					  <td class="label">5th</td>
+					  <td class="value" id="summary_rankedorgs_bypropcount_5"></td>
+					</tr>
+					<tr>
+					  <td class="label">&nbsp;</td>
+					  <td>&nbsp;</td>
+					</tr>
+					<tr>
+					  <td class="label" colspan="2"><strong>Awarded (qty.) by Institute</strong></td>
+					</tr>
+					<tr>
+					  <td class="label">1st</td>
+					  <td class="value" id="summary_rankedorgs_byawardcount_1"></td>
+					</tr>
+					<tr>
+					  <td class="label">2nd</td>
+					  <td class="value" id="summary_rankedorgs_byawardcount_2"></td>
+					</tr>
+					<tr>
+					  <td class="label">3rd</td>
+					  <td class="value" id="summary_rankedorgs_byawardcount_3"></td>
+					</tr>
+					<tr>
+					  <td class="label">4th</td>
+					  <td class="value" id="summary_rankedorgs_byawardcount_4"></td>
+					</tr>
+					<tr>
+					  <td class="label">5th</td>
+					  <td class="value" id="summary_rankedorgs_byawardcount_5"></td>
+					</tr>
+					<tr>
+					  <td class="label">&nbsp;</td>
+					  <td>&nbsp;</td>
+					</tr>
+					<tr>
+					  <td class="label" colspan="2"><strong>Awarded ($) by Institute</strong></td>
+					</tr>
+					<tr>
+					  <td class="label">1st</td>
+					  <td class="value" id="summary_rankedorgs_byawardfunding_1"></td>
+					</tr>
+					<tr>
+					  <td class="label">2nd</td>
+					  <td class="value" id="summary_rankedorgs_byawardfunding_2"></td>
+					</tr>
+					<tr>
+					  <td class="label">3rd</td>
+					  <td class="value" id="summary_rankedorgs_byawardfunding_3"></td>
+					</tr>
+					<tr>
+					  <td class="label">4th</td>
+					  <td class="value" id="summary_rankedorgs_byawardfunding_4"></td>
+					</tr>
+					<tr>
+					  <td class="label">5th</td>
+					  <td class="value" id="summary_rankedorgs_byawardfunding_5"></td>
+					</tr>
+					<tr>
+					  <td class="label">&nbsp;</td>
+					  <td>&nbsp;</td>
+					</tr>
+					<tr>
+					  <td class="label" colspan="2"><strong>Avg. Award/Grant by Institute</strong></td>
+					</tr>
+					<tr>
+					  <td class="label">1st</td>
+					  <td class="value" id="summary_rankedorgs_byavgawardfunding_1"></td>
+					</tr>
+					<tr>
+					  <td class="label">2nd</td>
+					  <td class="value" id="summary_rankedorgs_byavgawardfunding_2"></td>
+					</tr>
+					<tr>
+					  <td class="label">3rd</td>
+					  <td class="value" id="summary_rankedorgs_byavgawardfunding_3"></td>
+					</tr>
+					<tr>
+					  <td class="label">4th</td>
+					  <td class="value" id="summary_rankedorgs_byavgawardfunding_4"></td>
+					</tr>
+					<tr>
+					  <td class="label">5th</td>
+					  <td class="value" id="summary_rankedorgs_byavgawardfunding_5"></td>
+					</tr>
+					<tr>
+					  <td class="label">&nbsp;</td>
+					  <td>&nbsp;</td>
+					</tr>
+			       </table>
+
+
+			</div></div><!-- /summary -->
+		</div><!-- /datacol-right -->
+	</div><!-- /datacols -->
+	
+	
+	</div></div><!-- /port-data -->
+</li><!-- /port-item -->
+
+</ul>
+
+
+</div><!-- /full-width --><br style="clear: left;" />
+
+<script src="js/funcs.js"></script>
+<script src="js/explore.js"></script>
+
+<script id="division_details_groupedby_t1_template" type="text/x-jquery-tmpl"> 
+		(${count}) t${t1}:${label}<br />
+</script>
+<script id="division_details_groupedby_pge_template" type="text/x-jquery-tmpl"> 
+		(${count}) p${pge}:${label}<br />
+</script>
+<script id="prop_details_template" type="text/x-jquery-tmpl"> 
+		<p><strong>Title: </strong>${title}</p>
+		<p><strong>Abstract Text:</strong>${abstract}</p>
+		<p><strong>NSF Division: </strong>${org.full} (<strong>${org.name}</strong>)</p>
+</script>
+<script id="prop_pi_details_template" type="text/x-jquery-tmpl"> 
+	<tr>
+		<td>${nsf_id}</td>
+		<td>${name}</td>
+		<td>${inst.name}</td>
+		<td>${inst.dept}</td>
+	</tr>
+</script>
+<script id="orgRender" type="text/x-jquery-tmpl"> 
+		<strong>${name}</strong>
+		<p>${address.street}</p>
+		<p>${address.city}, ${address.state} ${address.zip} ${address.country}</p>
+		<p>Phone: ${phone}</p>
+
+</script>

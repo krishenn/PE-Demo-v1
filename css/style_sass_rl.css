@@ -1,0 +1,32 @@
+/******************************************************/
+#output {
+  padding: 5px;
+  background-color: white;
+  color: #666666;
+  /*
+  	table { 
+  		cursor: pointer; 
+  		border-collapse:collapse; 
+  		border:2px solid blue; 
+  		width:300px; 
+  		margin:8px; 
+  		tr { 
+  			border:1px solid blue; 
+  			color:blue; background-color:#f8f8f8; 
+  			&:hover { 
+  				color:red; 
+  			}
+  			td { 
+  				padding:3px; 
+  			} 
+  		} 
+  	}
+  */ }
+  #output p {
+    padding: 5px; }
+  #output a {
+    cursor: pointer; }
+  #output div {
+    padding: 2px;
+    background-color: white;
+    color: #cccccc; }
