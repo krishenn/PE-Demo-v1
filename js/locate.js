@@ -12,9 +12,9 @@ function init() {
 	$('#topics_submit_awards').hide();
 	$('#topics_submit_declines').hide();
 	$('#topics_submit_proposed').hide();
-	$('#topics_summary_propose').hide();
-	$('#topics_summary_decline').hide();
-	$('#topics_summary_award').hide();
+	$('#topics_summary_propose_container').hide();
+	$('#topics_summary_decline_container').hide();
+	$('#topics_summary_award_container').hide();
 	
 	//load topic legend
 	$.getJSON(apiurl+'topic?legend=topic'+'&jsoncallback=?', function(data) {
@@ -229,12 +229,30 @@ function init() {
 		hide:
 			hide topic detail
 	*/
-	$('a[id^=topic_details_]').live('click',function() {
+	/*$('a[id^=topic_details_]').live('click',function() {
 		if (!$(this).hasClass('disabled')) {		
 			showTopicDetails(this);
 		}
 		
 		return false;
+	});*/
+	$('#topics_table > tbody > tr:not(.topic-details)').live('click', function (event) {
+		//if the show details link was clicked trap that		
+	   if(event.target.nodeName == "A"){
+			if ($(event.target).attr('id').substring(0, 14) != "topic_details_") {		
+				return;
+			} else {
+				//toggle details
+				showTopicDetails(event.target);
+			}
+			event.preventDefault();
+		} else if (event.target.nodeName == "INPUT") return;
+		else {
+			var elem = $('a[id^="topic_details_"]', this);
+//console.log(elem);			
+			//toggle details
+			showTopicDetails(elem.get(0)); //dom object, not jquery object
+		}
 	});
 	
 	$('#topics_selection_clear').click(function(event) {
@@ -349,7 +367,7 @@ function init() {
 	
 	/** researchers datatable **/
 	$('#researchers_table > tbody > tr:not(.details)').live('click', function (event) {		 
-		showResearcherDetails(this, event);
+		selectResearcher(this, event);
 	});
 }
 
@@ -513,6 +531,8 @@ Returns: JSON data
 function initData(tab,data) {
 	if (tab == "researchers") {			
 		initResearchers(data);
+		//summarize data
+		summarizeResearchers(data);
 	}
 
 	//custom export button

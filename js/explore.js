@@ -1,5 +1,5 @@
 //globals
-var fiscalyear = '2011';
+var fiscalyear = '2012';
 
 //global variable that holds selected proposal data
 //when user first selects a proposal, researcher or org read the data and store it in this array (indexed by proposal id)
@@ -160,9 +160,9 @@ function init() {
 			var filter_status = $('input[name=filter_status]:checked').val();
 
 			//if award is checked, show award summary in topics, show award tab
-			$('#topics_summary_decline').hide();
-			$('#topics_summary_award').hide();
-			$('#topics_summary_propose').hide();
+			$('#topics_summary_decline_container').hide();
+			$('#topics_summary_award_container').hide();
+			$('#topics_summary_propose_container').hide();
 			//hide tabs
 			$('#data_tabs li:first').hide();
 			$('#data_tabs li:eq(1)').hide();
@@ -170,15 +170,15 @@ function init() {
 			//if decline or other is checked, show decline tab
 			if (filter_status=='completed') {
 				$('#data_tabs li:eq(2)').show();
-				$('#topics_summary_award').show();		
+				$('#topics_summary_award_container').show();		
 				if (proposalaccessallowed) {
 					$('#data_tabs li:eq(1)').show();
-					$('#topics_summary_decline').show();					
+					$('#topics_summary_decline_container').show();					
 				}
 			}
 			else if (proposalaccessallowed) {
 					$('#data_tabs li:first').show();
-					$('#topics_summary_propose').show();		
+					$('#topics_summary_propose_container').show();		
 			}
 
 			//reset summaries
@@ -253,95 +253,26 @@ function init() {
 		hide:
 			hide division detail
 	*/
-	$('a[id^=division_details_]').live('click',function() {
-		var division = $(this).attr('id').split('_').pop();
-		var table = $('#divisions_table').dataTable();
-		var row = this.parentNode.parentNode; //we need the node, not the jQuery object
-		var link = $(this);
-		if ($(this).html()=='Show') {
-			//now show it
-			var queryparams = makeAPIQueryParamString();
-			queryparams += '&org='+division+'&summ=t1,status,pge';
-		//console.log(apiurl+'topic?'+queryparams+'&jsoncallback=?');	
-			link.html('Hide');
-			table.fnOpen(row, "<span id='division_details_loader_"+division+"' class='loader'>Loading...</span><div class='dataInnerts' id='division_details_container_" + division + "'><table><tr><td class='division_details_1'>Most Common <strong>Topics</strong> (by # of Awards)</td><td class='division_details_2' id='groupedby_t1_"+division+"'></td><td class='division_details_3'>Most Common <strong>PGE Codes</strong> (by # of Awards)</td><td class='division_details_4' id='groupedby_pge_"+division+"'></td></tr></table></div>", 'details' );
-			$("#division_details_container_" + division).hide();
-			$.getJSON(apiurl+'topic?'+queryparams+'&jsoncallback=?', function(data) {			
-				//group by t1
-				var grouped = _.groupBy(data["data"],function(row) { return row["t1"]; });
-			//console.log(grouped);		
-				//now assemble
-				var collated = [];
-				for (var t1 in grouped) {
-					if (t1=='undefined') var topicid='0';
-					else var topicid = t1;
-					collated.push(_.reduce(grouped[t1],function(memo,row) {
-						if (!legend_topics[topicid]["label"]) var label = 'Not Electronically Readable';
-						else var label = legend_topics[topicid]["label"];
-						return {"t1":memo["t1"],"label":label,"count":memo["count"] + row["count"]};
-					},{"t1":topicid,"label":null,"count":0}));
-				}
-			//console.log(collated);		
-				//sort by awards, ascending
-				//only take the first x
-				var sorted = _.sortBy(collated,function(row) { return row["count"]; });
-			//console.log(sorted);		
-				var data_t1 = _.last(sorted,10).reverse();
-			//console.log('top');		
-			//console.log(data_t1);		
-
-				//group by pge
-				var grouped = _.groupBy(data["data"],function(row) { return row["pge"]; });
-				//now assemble
-				var collated = [];
-				for (var pge in grouped) {
-					collated.push(_.reduce(grouped[pge],function(memo,row) {
-						return {"pge":memo["pge"],"label":null,"count":memo["count"] + row["count"]};
-					},{"pge":pge,"label":null,"count":0}));
-				}
-				//sort by awards
-				//only take the last x
-				var sorted = _.sortBy(collated,function(row) { return row["count"]; });
-				var data_pge = _.last(sorted,10).reverse();
-			//console.log(data_t1);			
-			//console.log(data_pge);		
-
-				var data = {};
-				data["t1"] = data_t1;
-				data["pge"] = data_pge;
-
-			//console.log(data);	
-				_.each(data["t1"], function(item){
-					$($("#division_details_groupedby_t1_template").tmpl(item)).appendTo("#groupedby_t1_" + division);
-				});
-				//before displaying, get the label for the pge codes
-				var pge_codes = _.pluck(data_pge,"pge");
-				if (pge_codes.length) {
-					var legend_pges = {};
-					$.getJSON(apiurl+'proposal?legend=nsf_pge&q='+pge_codes.join(',')+'&jsoncallback=?', function(pgedata) {
-						_.each(pgedata, function(item) {							
-							legend_pges[item["nsf_pge"]] = {"label":item["label"],"full_label":item["full_label"]};
-						});
-						_.each(data["pge"], function(item){
-							if (legend_pges[item["pge"]]) item["label"] = legend_pges[item["pge"]]["label"];
-							$($("#division_details_groupedby_pge_template").tmpl(item)).appendTo("#groupedby_pge_" + division);
-						});					
-					});			
-				}
-				$("#division_details_loader_" + division).hide();
-				$("#division_details_container_" + division).slideDown();
-			});
-			//set the class
-			$(this).removeClass('show-details');
-			$(this).addClass('hide-details');
-		} else {
-			link.html('Show');
-			$("#division_details_container_" + division).slideUp(function() {
-				table.fnClose(row);
-			});
-			//set the class
-			$(this).removeClass('hide-details');
-			$(this).addClass('show-details');			
+	/*$('a[id^=division_details_]').live('click',function() {
+		showDivisionDetails(this);
+	});*/
+	$('#divisions_table > tbody > tr:not(.division-details)').live('click', function (event) {
+//console.log(event.target.nodeName);		
+		//if the show details link was clicked trap that		
+	   if(event.target.nodeName == "A"){
+			if ($(event.target).attr('id').substring(0, 17) != "division_details_") {		
+				return;
+			} else {
+				//toggle details
+				showDivisionDetails(event.target);
+			}
+			event.preventDefault();
+		} else if (event.target.nodeName == "INPUT") return;
+		else {
+			var elem = $('a[id^="division_details_"]', this);
+//console.log(elem);			
+			//toggle details
+			showDivisionDetails(elem.get(0)); //return underlying dom object here, not jquery object
 		}
 	});
 
@@ -514,12 +445,30 @@ function init() {
 		hide:
 			hide topic detail
 	*/
-	$('a[id^=topic_details_]').live('click',function() {
+	/*$('a[id^=topic_details_]').live('click',function() {
 		if (!$(this).hasClass('disabled')) {		
 			showTopicDetails(this);
 		}
 		
 		return false;
+	});*/
+	$('#topics_table > tbody > tr:not(.topic-details)').live('click', function (event) {
+		//if the show details link was clicked trap that		
+	   if(event.target.nodeName == "A"){
+			if ($(event.target).attr('id').substring(0, 14) != "topic_details_") {		
+				return;
+			} else {
+				//toggle details
+				showTopicDetails(event.target);
+			}
+			event.preventDefault();
+		} else if (event.target.nodeName == "INPUT") return;
+		else {
+			var elem = $('a[id^="topic_details_"]', this);
+//console.log(elem);			
+			//toggle details
+			showTopicDetails(elem.get(0)); //dom object, not jquery object
+		}
 	});
 	
 	$('#topics_selection_clear').click(function(event) {
@@ -648,7 +597,7 @@ function init() {
 	});
 	
 	/** proposed datatable **/
-	$('#proposed_table tbody tr').live('click', function (event) {
+	/*$('#proposed_table tbody tr').live('click', function (event) {
 		var oTable = $('#proposed_table').dataTable();
 	    var aData = oTable.fnGetData(this); // get datarow
 
@@ -668,12 +617,12 @@ function init() {
 				$(this).addClass('row_selected');
 				$(this).addClass('DTTT_selected');
 			}			
-			updateProposeSummary(oTable,aData,$(this).hasClass('row_selected'));
+			//updateProposeSummary(oTable,aData,$(this).hasClass('row_selected'));
 	    }
-	});
+	});*/
 
 	/** declines datatable **/
-	$('#declines_table tbody tr').live('click', function (event) {
+	/*$('#declines_table tbody tr').live('click', function (event) {
 		var oTable = $('#declines_table').dataTable();
 	    var aData = oTable.fnGetData(this); // get datarow
 
@@ -693,9 +642,9 @@ function init() {
 				$(this).addClass('row_selected');
 				$(this).addClass('DTTT_selected');
 			}			
-			updateDeclineSummary(oTable,aData,$(this).hasClass('row_selected'));
+			//updateDeclineSummary(oTable,aData,$(this).hasClass('row_selected'));
 	    }
-	});
+	});*/
 
 	/** awards datatable **/
 	$('#awards_table > tbody > tr:not(.details)').live('click', function (event) {
@@ -703,48 +652,18 @@ function init() {
 
 		//if the show details link was clicked trap that		
 	   if(event.target.nodeName == "A"){
-			if ($(event.target).hasClass('award_details')) {		
-				var nTr = this;
-				if (nTr != null) {
-					var aData = oTable.fnGetData(nTr);
-					if ( $(event.target).html().match('Hide') )
-					{
-						$(event.target).html('Show');
-						//set the class
-						$(event.target).removeClass('hide-details');
-						$(event.target).addClass('show-details');
-						$("#pid_" + aData[0]).slideUp(function() {
-							oTable.fnClose(nTr);
-						});
-					}
-					else
-					{
-						$(event.target).html('Hide');
-						//set the class
-						$(event.target).removeClass('show-details');
-						$(event.target).addClass('hide-details');
-						var tr_details = oTable.fnOpen(nTr, "<span id='pid_loader_"+aData[0]+"' class='loader'>Loading...</span><div class='dataInnerts' id='pid_" + aData[0] + "'><div id='prop_details_" + aData[0] + "'></div><h3>Researchers:</h3><table class='dataInnerts'><thead><tr><th>ID</th><th>Name</th><th>Institution</th><th>Department</th></thead><tbody id='pi_details_" + aData[0] + "'></tbody></table></div>", 'details' );
-						$(tr_details).addClass('details');
-						$.getJSON(apiurl+'prop?id=' + aData[0] + '&jsoncallback=?', function(data) {
-							$("#pid_" + aData[0]).hide();
-							$("#prop_details_" + aData[0]).html($("#prop_details_template").tmpl(data["data"]));
-							$("#pid_loader_" + aData[0]).hide();
-							$("#pid_" + aData[0]).slideDown();
-						});
-						$.getJSON(apiurl+'prop?id=' + aData[0] + '&page=pi' + '&jsoncallback=?', function(data) {
-							_.each(data["data"],function(row) {
-								if (!row["inst"]) row["inst"] = {"name":"","dept":""};
-								$($("#prop_pi_details_template").tmpl(row)).appendTo("#pi_details_" + aData[0]);
-							});
-						});
-					}
-				}
-				event.preventDefault();
+			if (!$(event.target).hasClass('award_details')) {		
 				return;
 			} else {
-				return;
+				//toggle details
+				showAwardDetails(oTable,this,$(event.target));
 			}
-	   }
+			event.preventDefault();
+		} else {
+			var elem = $('a[class*="award_details"]', this);
+			//toggle details
+			showAwardDetails(oTable,this,elem);
+		}
 
 	    var aData = oTable.fnGetData(this); // get datarow
 	    if (null != aData)  // null if we clicked on title row
@@ -757,10 +676,50 @@ function init() {
 				$(this).addClass('row_selected');
 				$(this).addClass('DTTT_selected');
 			}			
-			updateAwardSummary(oTable,aData,$(this).hasClass('row_selected'));
+			//updateAwardSummary(oTable,aData,$(this).hasClass('row_selected'));
 	    }
 	});
 	
+	/** researchers datatable **/
+	$('#researchers_table > tbody > tr:not(.details)').live('click', function (event) {   
+		selectResearcher(this, event);
+	});
+
+	/** institutions datatable **/
+	$('#institutions_table > tbody > tr:not(.details)').live('click', function (event) {        
+		var oTable = $('#institutions_table').dataTable();
+
+		//if the show details link was clicked trap that		
+	   if(event.target.nodeName == "A"){
+			if (!$(event.target).hasClass('institution_details')) {		
+				return;
+			} else {
+				//toggle details
+				showInstitutionDetails(oTable,this,$(event.target));
+			}
+			event.preventDefault();
+		} else {
+			var elem = $('a[class*="institution_details"]', this);
+//console.log(elem);			
+			//toggle details
+			showInstitutionDetails(oTable,this,elem);
+		}
+
+	    var aData = oTable.fnGetData(this); // get datarow
+	    if (null != aData)  // null if we clicked on title row
+	    {
+			//set the class
+			if ( $(this).hasClass('row_selected') ) {
+				$(this).removeClass('row_selected');
+				$(this).removeClass('DTTT_selected');
+			} else {
+				$(this).addClass('row_selected');
+				$(this).addClass('DTTT_selected');
+			}			
+			//updateInstitutionSummary(aData,$(this).hasClass('row_selected'));
+	    }
+	});
+	 
 	//pge code lookup event
 	$('span[id^=pgecode_lookup_]').live('mouseover',function(event) {
 		var link = this;
@@ -777,97 +736,6 @@ function init() {
 		}
 	});
 	
-	/** researchers datatable **/
-	$('#researchers_table > tbody > tr:not(.details)').live('click', function (event) {   
-		showResearcherDetails(this, event);
-	});
-
-	/** institutions datatable **/
-	$('#institutions_table > tbody > tr:not(.details)').live('click', function (event) {        
-		var oTable = $('#institutions_table').dataTable();
-
-		//if the show details link was clicked trap that		
-	   if(event.target.nodeName == "A"){
-			if ($(event.target).hasClass('institution_details')) {		
-				var org_node = this;
-				if (org_node != null) {
-					var orgData = oTable.fnGetData(org_node);
-					if ( $(event.target).html().match('Hide') )
-					{
-						$(event.target).html('Show');
-						//set the class
-						$(event.target).removeClass('hide-details');
-						$(event.target).addClass('show-details');
-						$("#org_" + orgData[0]).slideUp(function() {
-							oTable.fnClose(org_node);
-						});
-					}
-					else
-					{
-						$(event.target).html('Hide');
-						//set the class
-						$(event.target).removeClass('show-details');
-						$(event.target).addClass('hide-details');						
-						var tr_details = oTable.fnOpen(org_node, "<div class='dataInnerts overflow' id='org_" + orgData[0] + "'><span id='org_loader_"+orgData[0]+"' class='loader'>Loading...</span><table><tr><td class='pi_details_user' id='org_details_"+orgData[0]+"'></td><td class='pi_details_prop'><span id='org_summary_loader_"+orgData[0]+"' class='loader'>Loading...</span><span id='org_proposal_summary_"+orgData[0]+"'></span></td></tr></table><table class='pi_details_proplist' id='org_propList_"+orgData[0]+"'></table></div>", 'details' );
-						$(tr_details).addClass('details');
-						$("#org_" + orgData[0]).hide();
-						//get org details
-						//load org data
-						$.getJSON(apiurl+'org?id=' + orgData[0] + '&jsoncallback=?', function(data) {
-							$($("#orgRender").tmpl(data["data"])).appendTo("#org_details_" + orgData[0]);
-						});						
-						//get list of all proposals for institution
-						//extract the proposal ids
-						var propids = orgData[4];
-//console.log(propids);							
-						//now load the proposals
-						if (propids.length>0) {
-							$.getJSON(apiurl + 'proposal?id=' + propids.join(',') + '&jsoncallback=?', function(data) {
-								//for each prop store the data in the cache if it is part of the currently filtered set
-								if (data["data"]) {
-									for (var i in data["data"]) {							
-			//console.log(data["data"][i]["nsf_id"]);
-										propsummarydata[data["data"][i]["nsf_id"]] = data["data"][i];
-									}
-								}
-								var propids_awarded = [];
-								var propids_declined = [];
-								var propids_proposed = [];
-								$.each(data["data"], function(i, item){
-									if (item["status"]["name"]=="award") propids_awarded.push(item["nsf_id"]);
-									else if (item["status"]["name"]=="decline") propids_declined.push(item["nsf_id"]);
-									else if (item["status"]["name"]=="propose") propids_proposed.push(item["nsf_id"]);
-								});								
-								//render the list
-								renderPropList('org', orgData[0], data, propids, propids_awarded, propids_declined, propids_proposed, null);
-							});
-						}
-						$("#org_loader_" + orgData[0]).hide();
-						$("#org_" + orgData[0]).slideDown();
-					}
-				}
-				event.preventDefault();
-			    return;
-			} else {
-				return;
-			}
-		}
-
-	    var aData = oTable.fnGetData(this); // get datarow
-	    if (null != aData)  // null if we clicked on title row
-	    {
-			//set the class
-			if ( $(this).hasClass('row_selected') ) {
-				$(this).removeClass('row_selected');
-				$(this).removeClass('DTTT_selected');
-			} else {
-				$(this).addClass('row_selected');
-				$(this).addClass('DTTT_selected');
-			}			
-			updateInstitutionSummary(aData,$(this).hasClass('row_selected'));
-	    }
-	});
-	 
 }
 
 /** DIVISIONS **/
@@ -1081,6 +949,106 @@ function initDivisions(rawdata) {
 	}
 }
 
+function showDivisionDetails(elem) {
+	var division = $(elem).attr('id').split('_').pop();
+	var table = $('#divisions_table').dataTable();
+	var row = elem.parentNode.parentNode; //we need the node, not the jQuery object
+	var link = $(elem);
+	if ($(elem).html()=='Show') {
+		//now show it
+		var queryparams = makeAPIQueryParamString();
+		queryparams += '&org='+division+'&summ=t1,status,pge';
+	//console.log(apiurl+'topic?'+queryparams+'&jsoncallback=?');	
+		link.html('Hide');
+//console.log($('input[name=filter_status]:checked').val());		
+		if ($('input[name=filter_status]:checked').val()=='completed') {
+			var type = 'Awards';
+			if (proposalaccessallowed) type += ' and Declines';
+	    } else if (proposalaccessallowed) {
+			var type = 'Other';
+		}
+		table.fnOpen(row, "<span id='division_details_loader_"+division+"' class='loader'>Loading...</span><div class='dataInnerts' id='division_details_container_" + division + "'><table><tr class='division-details'><td class='division_details_1'>Most Common <strong>Topics</strong> (by # of "+type+")</td><td class='division_details_2' id='groupedby_t1_"+division+"'></td><td class='division_details_3'>Most Common <strong>PGE Codes</strong> (by # of "+type+")</td><td class='division_details_4' id='groupedby_pge_"+division+"'></td></tr></table></div>", 'details' );
+		$("#division_details_container_" + division).hide();
+		$.getJSON(apiurl+'topic?'+queryparams+'&jsoncallback=?', function(data) {			
+			//group by t1
+			var grouped = _.groupBy(data["data"],function(row) { return row["t1"]; });
+		//console.log(grouped);		
+			//now assemble
+			var collated = [];
+			for (var t1 in grouped) {
+				if (t1=='undefined') var topicid='0';
+				else var topicid = t1;
+				if (topicid=='0') continue;
+				collated.push(_.reduce(grouped[t1],function(memo,row) {
+					if (!legend_topics[topicid]["label"]) var label = 'Not Electronically Readable';
+					else var label = legend_topics[topicid]["label"];
+					return {"t1":memo["t1"],"label":label,"count":memo["count"] + row["count"]};
+				},{"t1":topicid,"label":null,"count":0}));
+			}
+		//console.log(collated);		
+			//sort by awards, ascending
+			//only take the first x
+			var sorted = _.sortBy(collated,function(row) { return row["count"]; });
+		//console.log(sorted);		
+			var data_t1 = _.last(sorted,10).reverse();
+		//console.log('top');		
+		//console.log(data_t1);		
+
+			//group by pge
+			var grouped = _.groupBy(data["data"],function(row) { return row["pge"]; });
+			//now assemble
+			var collated = [];
+			for (var pge in grouped) {
+				collated.push(_.reduce(grouped[pge],function(memo,row) {
+					return {"pge":memo["pge"],"label":null,"count":memo["count"] + row["count"]};
+				},{"pge":pge,"label":null,"count":0}));
+			}
+			//sort by awards
+			//only take the last x
+			var sorted = _.sortBy(collated,function(row) { return row["count"]; });
+			var data_pge = _.last(sorted,10).reverse();
+		//console.log(data_t1);			
+		//console.log(data_pge);		
+
+			var data = {};
+			data["t1"] = data_t1;
+			data["pge"] = data_pge;
+
+		//console.log(data);	
+			_.each(data["t1"], function(item){
+				$($("#division_details_groupedby_t1_template").tmpl(item)).appendTo("#groupedby_t1_" + division);
+			});
+			//before displaying, get the label for the pge codes
+			var pge_codes = _.pluck(data_pge,"pge");
+			if (pge_codes.length) {
+				var legend_pges = {};
+				$.getJSON(apiurl+'proposal?legend=nsf_pge&q='+pge_codes.join(',')+'&jsoncallback=?', function(pgedata) {
+					_.each(pgedata, function(item) {							
+						legend_pges[item["nsf_pge"]] = {"label":item["label"],"full_label":item["full_label"]};
+					});
+					_.each(data["pge"], function(item){
+						if (legend_pges[item["pge"]]) item["label"] = legend_pges[item["pge"]]["label"];
+						$($("#division_details_groupedby_pge_template").tmpl(item)).appendTo("#groupedby_pge_" + division);
+					});					
+				});			
+			}
+			$("#division_details_loader_" + division).hide();
+			$("#division_details_container_" + division).slideDown();
+		});
+		//set the class
+		$(elem).removeClass('show-details');
+		$(elem).addClass('hide-details');
+	} else {
+		link.html('Show');
+		$("#division_details_container_" + division).slideUp(function() {
+			table.fnClose(row);
+		});
+		//set the class
+		$(elem).removeClass('hide-details');
+		$(elem).addClass('show-details');			
+	}	
+}
+
 /** DATA **/
 /*showTab */
 /*
@@ -1146,7 +1114,9 @@ function showTab(tab) {
 		}
 		$('#'+tab+'_loader').show();
 		$.getJSON(apiurl+'topic?' + queryparams + '&page=' + page + '&jsoncallback=?', function(data) {
-			initData(tab, data["data"]);		
+			initData(tab, data["data"]);
+			//summarize data
+			summarizeData(tab, data["data"]);
 		});		
 	}
 }
@@ -1185,6 +1155,15 @@ function initData(tab,data) {
 			"iDisplayLength": 50,
 			"aoColumnDefs": [
 				{
+					"fnRender": function (oObj) {
+						if (proposalaccessallowed) {
+							link = 'https://www.ejacket.nsf.gov/ej/showProposal.do?optimize=Y&ID='+oObj.aData[0]+'&docid='+oObj.aData[0];
+							title = 'Open in e-Jacket';
+							return '<a href="'+link+'" title="'+title+'" target="_blank">'+oObj.aData[0]+'</a>'
+						} else {
+							return oObj.aData[0];
+						}
+					},
 					"sTitle": "Prop ID",
 					"aTargets": [ 0 ]
 				},
@@ -1250,6 +1229,15 @@ function initData(tab,data) {
 			"iDisplayLength": 50,
 			"aoColumnDefs": [
 				{
+					"fnRender": function (oObj) {
+						if (proposalaccessallowed) {
+							link = 'https://www.ejacket.nsf.gov/ej/showProposal.do?optimize=Y&ID='+oObj.aData[0]+'&docid='+oObj.aData[0];
+							title = 'Open in e-Jacket';
+							return '<a href="'+link+'" title="'+title+'" target="_blank">'+oObj.aData[0]+'</a>'
+						} else {
+							return oObj.aData[0];
+						}
+					},
 					"sTitle": "Prop ID",
 					"aTargets": [ 0 ]
 				},
@@ -1317,6 +1305,15 @@ function initData(tab,data) {
 			"iDisplayLength": 50,
 			"aoColumnDefs": [
 				{
+					"fnRender": function (oObj) {
+						var link = 'http://www.nsf.gov/awardsearch/showAward.do?AwardNumber='+oObj.aData[0];
+						var title = 'Open in nsf.gov';
+						if (proposalaccessallowed) {
+							link = 'https://www.ejacket.nsf.gov/ej/showProposal.do?optimize=Y&ID='+oObj.aData[0]+'&docid='+oObj.aData[0];
+							title = 'Open in e-Jacket';
+						}
+						return '<a href="'+link+'" title="'+title+'" target="_blank">'+oObj.aData[0]+'</a>';
+					},
 					"sTitle": "Prop ID",
 					"aTargets": [ 0 ]
 				},
@@ -1512,6 +1509,335 @@ function initData(tab,data) {
 	$('#'+tab+'_loader').hide();
 }
 
+function summarizeData(tab,data) {
+	//it's the same as what we show on the topics summary so just grab it baybee!
+	//way to find that out after writing all this code!
+	if (tab=='proposed') {
+		$('#data_summary_proposed').html($('#topics_summary_propose').html());
+	} else if (tab=='declines') {
+		$('#data_summary_declines').html($('#topics_summary_decline').html());
+	} else if (tab=='awards') {
+		$('#data_summary_awards').html($('#topics_summary_award').html());		
+	} else if (tab=='researchers') {
+		summarizeResearchers(data);
+	} else if (tab=='institutions') {
+		summarizeInstitutions(data);
+	}
+/*	if (tab=='proposed' || tab=='declines' || 'awards') {
+		//group by date
+		if (tab=='proposed' || tab=='declines')
+			var grouped = _.groupBy(data,function(row) { if (keyExists('request.date',row)) return row['request']['date'].split('/').shift(); else return null; });
+		else
+			var grouped = _.groupBy(data,function(row) { if (keyExists('awarded.date',row)) return row['awarded']['date'].split('/').shift(); else return null; });
+		//now reduce
+		var collated = [];
+		for (var key in grouped) {
+			collated.push(_.reduce(grouped[key], function(memo, row) {
+				var funding = 0;
+				if (tab=="awards") {
+					funding = row["awarded"]["dollar"];
+				} else {
+					funding = row["request"]["dollar"];
+				}
+				return {"key":key,"funding":memo["funding"]+funding};
+			},{"key":key,"funding":0}));
+		}
+		//now strip out any pge codes where there was no funding
+		collated = _.filter(collated, function(row) { return row['funding'] > 0; });
+		//sort by awards
+		collated = _.sortBy(collated,function(row) { return parseInt(row["key"]); });
+		//now display
+		displayDataSummary('data_summary_'+tab+'_'+'year','Funding Over Time','year',collated);
+
+		//group by division
+		var grouped = _.groupBy(data,function(row) { if (keyExists('org.name',row)) return row['org']['name'].split('/').shift(); else return null; });
+		//now reduce
+		var collated = [];
+		for (var key in grouped) {
+			collated.push(_.reduce(grouped[key], function(memo, row) {
+				var funding = 0;
+				if (tab=="awards") {
+					funding = row["awarded"]["dollar"];
+				} else {
+					funding = row["request"]["dollar"];
+				}
+				return {"key":key,"funding":memo["funding"]+funding};
+			},{"key":key,"funding":0}));
+		}
+		//now strip out any pge codes where there was no funding
+		collated = _.filter(collated, function(row) { return row['funding'] > 0; });
+		//sort by awards
+		collated = _.sortBy(collated,function(row) { return row["funding"]; });
+		//now display
+		displayDataSummary('data_summary_'+tab+'_'+'org','Funding by Division','org',collated);
+
+		//group by pge code
+		var grouped = _.groupBy(data,function(row) { if (keyExists('pge.code',row)) return row['pge']['code'].split('/').shift(); else return null; });
+		//now reduce
+		var collated = [];
+		for (var key in grouped) {
+			collated.push(_.reduce(grouped[key], function(memo, row) {
+				var funding = 0;
+				if (tab=="awards") {
+					funding = row["awarded"]["dollar"];
+				} else {
+					funding = row["request"]["dollar"];
+				}
+				return {"key":key,"funding":memo["funding"]+funding};
+			},{"key":key,"funding":0}));
+		}
+		//now strip out any pge codes where there was no funding
+		collated = _.filter(collated, function(row) { return row['funding'] > 0; });
+		//sort by awards
+		collated = _.sortBy(collated,function(row) { return row["funding"]; });
+		//now display
+		displayDataSummary('data_summary_'+tab+'_'+'pge','Funding by PGE Code','pge',collated);
+
+		//group by topic
+		
+	} */
+	
+}
+
+function displayDataSummary(elem,title,group,data) {
+//console.log(data);
+	//clear first
+	$('#'+elem).html('');
+	//create the high charts container
+	var categories = _.pluck(data,'key');
+	var funding = _.pluck(data,'funding');
+	var chart = new Highcharts.Chart({
+       chart: {
+          renderTo: elem,
+          type: 'bar'
+       },
+       title: {
+          text: title
+       },
+       xAxis: {
+          categories: categories,
+		  labels: {
+			formatter: function() {
+				if (group=='pge') return '<span id="pgecode_lookup_'+this.value+'" title="">p'+this.value+'</span>';
+				else if (group=='t1') {
+					var t1 = _.filter(data,function(row) { return row["key"]==this.value; });
+					return '<span title="'+t1['label']+'">'+this.value+'</span>';
+				}
+				else return this.value;
+			},
+			useHTML: true
+		}
+       },
+       yAxis: {
+          title: {
+             text: ''
+          }
+       },
+	   tooltip: {
+         formatter: function() {
+            return ''+
+                this.series.name +': '+ formatFunding(this.y);
+         }
+       },
+	   legend: {
+		  enabled: false
+	   },
+       series: [{
+          name: 'Funding',
+          data: funding
+       }]
+    });			
+}
+
+function summarizeInstitutions(data) {
+	//group by state
+	var grouped = _.groupBy(data,function(row) { if (row["address"] && row["address"]["state"]) return row["address"]["state"]; });
+//console.log(grouped);			
+	//now put it together
+	var collated = [];
+	for (var key in grouped) {
+		//get the institution id for all the institutions in this state
+		var count = grouped[key].length;
+		//add up the totals
+		if (count>0 && states[key]) collated.push([states[key],count]);
+	}
+
+	//console.log(collated);			
+	//console.log('drawing chart');
+	var data = new google.visualization.DataTable();
+	data.addRows(collated.length);
+	data.addColumn('string', 'State');
+	data.addColumn('number', 'Institutions');
+	_.each(collated, function(value,key) {
+//console.log(key)
+//console.log(value);		
+		data.setValue(key,0,value[0]);
+		data.setValue(key,1,value[1]);
+	});
+//	data.addRows(collated);
+	var geochart = new google.visualization.GeoChart(document.getElementById('data_summary_institutions_map'));
+	option = {
+	  width: 265, 
+	  height: 175, 
+	  region: 'US', 
+	  resolution: 'provinces',
+	  displayMode: 'regions',
+	  datalessRegionColor: 'f9f9f9',
+	  colorAxis: {
+	    colors: ['#E4F1D8', '#1F8F54']
+	  }
+	}
+	$('#data_summary_institutions_loader').hide();
+	geochart.draw(data, option);				
+
+	//also show a graph, just to be fancy
+	//create the high charts container
+	collated = _.sortBy(collated,function(row) { return row[1]; }).reverse();
+	var categories = _.pluck(collated,0);
+	var values = _.pluck(collated,1);
+	//dynamically calculate height of chart
+	var height = (30*categories.length)+100; //30px
+	var chart = new Highcharts.Chart({
+	    chart: {
+	       renderTo: 'data_summary_institutions_graph',
+	       type: 'bar',
+	 height: height
+	    },
+	    title: {
+	       text: null
+	    },
+	 subtitle: {
+	 text: null
+	},
+	    xAxis: {
+	       categories: categories
+	    },
+	    yAxis: {
+	       title: {
+	          text: ''
+	       }
+	    },
+	 legend: {
+	 enabled: false
+	 },
+	   plotOptions: {
+	      bar: {
+	         dataLabels: {
+	            enabled: true,
+	          formatter: function() {
+	             return this.y;
+	          }
+	         }
+	      }
+	   },
+	    series: [{
+	       name: 'Institutions',
+	       data: values
+	    }],
+	 credits: {
+	enabled: false
+	}
+	 });		
+}
+
+function showAwardDetails(oTable,nTr,elem) {
+	if (nTr != null) {
+		var aData = oTable.fnGetData(nTr);
+		var pid = $(aData[0]).html();
+//console.log(pid);		
+		if ( elem.html().match('Hide') )
+		{
+			elem.html('Show');
+			//set the class
+			elem.removeClass('hide-details');
+			elem.addClass('show-details');
+			$("#pid_" + pid).slideUp(function() {
+				oTable.fnClose(nTr);
+			});
+		}
+		else
+		{
+			elem.html('Hide');
+			//set the class
+			elem.removeClass('show-details');
+			elem.addClass('hide-details');
+			var tr_details = oTable.fnOpen(nTr, "<span id='pid_loader_"+pid+"' class='loader'>Loading...</span><div class='dataInnerts' id='pid_" + pid + "'><div id='prop_details_" + pid + "'></div><h3>Researchers:</h3><table class='dataInnerts'><thead><tr><th>ID</th><th>Name</th><th>Institution</th><th>Department</th></thead><tbody id='pi_details_" + pid + "'></tbody></table></div>", 'details' );
+			$(tr_details).addClass('details');
+			$.getJSON(apiurl+'prop?id=' + pid + '&jsoncallback=?', function(data) {
+				$("#pid_" + pid).hide();
+				$("#prop_details_" + pid).html($("#prop_details_template").tmpl(data["data"]));
+				$("#pid_loader_" + pid).hide();
+				$("#pid_" + pid).slideDown();
+			});
+			$.getJSON(apiurl+'prop?id=' + pid + '&page=pi' + '&jsoncallback=?', function(data) {
+				_.each(data["data"],function(row) {
+					if (!row["inst"]) row["inst"] = {"name":"","dept":""};
+					$($("#prop_pi_details_template").tmpl(row)).appendTo("#pi_details_" + pid);
+				});
+			});
+		}
+	}
+}
+
+function showInstitutionDetails(oTable,org_node,elem) {
+	if (org_node != null) {
+		var orgData = oTable.fnGetData(org_node);
+		if ( elem.html().match('Hide') )
+		{
+			elem.html('Show');
+			//set the class
+			elem.removeClass('hide-details');
+			elem.addClass('show-details');
+			$("#org_" + orgData[0]).slideUp(function() {
+				oTable.fnClose(org_node);
+			});
+		}
+		else
+		{
+			elem.html('Hide');
+			//set the class
+			elem.removeClass('show-details');
+			elem.addClass('hide-details');						
+			var tr_details = oTable.fnOpen(org_node, "<div class='dataInnerts overflow' id='org_" + orgData[0] + "'><span id='org_loader_"+orgData[0]+"' class='loader'>Loading...</span><table><tr><td class='pi_details_user' id='org_details_"+orgData[0]+"'></td><td class='pi_details_prop'><span id='org_summary_loader_"+orgData[0]+"' class='loader'>Loading...</span><span id='org_proposal_summary_"+orgData[0]+"'></span></td></tr></table><table class='pi_details_proplist' id='org_propList_"+orgData[0]+"'></table></div>", 'details' );
+			$(tr_details).addClass('details');
+			$("#org_" + orgData[0]).hide();
+			//get org details
+			//load org data
+			$.getJSON(apiurl+'org?id=' + orgData[0] + '&jsoncallback=?', function(data) {
+				$($("#orgRender").tmpl(data["data"])).appendTo("#org_details_" + orgData[0]);
+			});						
+			//get list of all proposals for institution
+			//extract the proposal ids
+			var propids = orgData[4];
+//console.log(propids);							
+			//now load the proposals
+			if (propids.length>0) {
+				$.getJSON(apiurl + 'proposal?id=' + propids.join(',') + '&jsoncallback=?', function(data) {
+					//for each prop store the data in the cache if it is part of the currently filtered set
+					if (data["data"]) {
+						for (var i in data["data"]) {							
+//console.log(data["data"][i]["nsf_id"]);
+							propsummarydata[data["data"][i]["nsf_id"]] = data["data"][i];
+						}
+					}
+					var propids_awarded = [];
+					var propids_declined = [];
+					var propids_proposed = [];
+					$.each(data["data"], function(i, item){
+						if (item["status"]["name"]=="award") propids_awarded.push(item["nsf_id"]);
+						else if (item["status"]["name"]=="decline") propids_declined.push(item["nsf_id"]);
+						else if (item["status"]["name"]=="propose") propids_proposed.push(item["nsf_id"]);
+					});								
+					//render the list
+					renderPropList('org', orgData[0], data, propids, propids_awarded, propids_declined, propids_proposed, null);
+				});
+			}
+			$("#org_loader_" + orgData[0]).hide();
+			$("#org_" + orgData[0]).slideDown();
+		}
+	}	
+}
+
 /** propose data tab handling functions **/
 /* update summary */
 function updateProposeSummary(oTable,aData,selected) {
@@ -1535,7 +1861,7 @@ function updateProposeSummary(oTable,aData,selected) {
 	numFundingSelected = addCommas(numFundingSelected);
 	if (numFundingSelected) numFundingSelected = '$'+numFundingSelected;
 
-	$("#summary_propopsed").html(numGrantsSelected);
+	$("#summary_proposed").html(numGrantsSelected);
 	$("#summary_proposed_funding_total").html(numFundingSelected);
 
 //console.log(fnGetSelected(oTable));

@@ -1,5 +1,59 @@
 var proposalaccessallowed = false;
-var apiurl = 'http://readidata.nitrd.gov/star/py/api.py/'; //_beta
+var apiurl = 'http://rd-dashboard.nitrd.gov/gapi/api.py/'; //'http://readidata.nitrd.gov/star/py/api.py/'; //_beta
+
+var states = {
+  'AL': 'Alabama',
+  'AK': 'Alaska',
+  'AZ': 'Arizona',
+  'AR': 'Arkansas',
+  'CA': 'California',
+  'CO': 'Colorado',
+  'CT': 'Connecticut',
+  'DE': 'Delaware',
+  'DC': 'District of Columbia',
+  'FL': 'Florida',
+  'GA': 'Georgia',
+  'HI': 'Hawaii',
+  'ID': 'Idaho',
+  'IL': 'Illinois',
+  'IN': 'Indiana',
+  'IA': 'Iowa',
+  'KS': 'Kansas',
+  'KY': 'Kentucky',
+  'LA': 'Louisiana',
+  'ME': 'Maine',
+  'MD': 'Maryland',
+  'MA': 'Massachusetts',
+  'MI': 'Michigan',
+  'MN': 'Minnesota',
+  'MS': 'Mississippi',
+  'MO': 'Missouri',
+  'MT': 'Montana',
+  'NE': 'Nebraska',
+  'NV': 'Nevada',
+  'NH': 'New Hampshire',
+  'NJ': 'New Jersey',
+  'NM': 'New Mexico',
+  'NY': 'New York',
+  'NC': 'North Carolina',
+  'ND': 'North Dakota',
+  'OH': 'Ohio',
+  'OK': 'Oklahoma',
+  'OR': 'Oregon',
+  'PA': 'Pennsylvania',
+  'RI': 'Rhode Island',
+  'SC': 'South Carolina',
+  'SD': 'South Dakota',
+  'TN': 'Tennessee',
+  'TX': 'Texas',
+  'UT': 'Utah',
+  'VT': 'Vermont',
+  'VA': 'Virginia',
+  'WA': 'Washington',
+  'WV': 'West Virginia',
+  'WI': 'Wisconsin',
+  'WY': 'Wyoming'
+};
 
 var divisions = {
 "OCI":"Office of Cyberinfrastructure",
@@ -157,7 +211,7 @@ $(document).ready(function() {
 	});
 
 	TableTools.DEFAULTS.sSwfPath = "js/lib/tabletools/media/swf/copy_cvs_xls_pdf.swf";
-	TableTools.DEFAULTS.sRowSelect = "multi";
+	//TableTools.DEFAULTS.sRowSelect = "multi";
 		
 	// Check to see if we have access to nsfstarmetrics server 
 	$.ajax({
@@ -169,7 +223,8 @@ $(document).ready(function() {
 			proposalaccessallowed = true;
 			apiurl = "http://128.150.10.70/py/api.py/";
 			//call the template's initialization function - each template must define this for it to be executed
-			init();
+			google.load('visualization', '1', {'packages': ['geochart'], 'callback': init});			
+			//init();
 //alert('success');
 //alert(proposalaccessallowed);
 //alert(apiurl);			
@@ -180,7 +235,8 @@ $(document).ready(function() {
 //alert(t);
 //			console.log(data);
 			//call the template's initialization function - each template must define this for it to be executed
-			init();
+			google.load('visualization', '1', {'packages': ['geochart'], 'callback': init});			
+			//init();
 		}
 	});
 
@@ -208,9 +264,9 @@ function resetTopicSummary() {
 	$('#topics_summary_selected').html('');		
 
 	//reset the topic summaries
-	$('span[id=topics_summary_award_count], span[id=topics_summary_award_funding], ul[id^=topics_summary_award_]').html('');
-	$('span[id=topics_summary_decline_count], span[id=topics_summary_decline_funding], ul[id^=topics_summary_decline_]').html('');
-	$('span[id=topics_summary_propose_count], span[id=topics_summary_propose_funding], ul[id^=topics_summary_propose_]').html('');
+	$('span[id=topics_summary_award_count], span[id=topics_summary_award_funding], div[id=topics_summary_award_org], div[id=topics_summary_award_t1], div[id=topics_summary_award_pge], div[id=topics_summary_award_year]').html('');
+	$('span[id=topics_summary_decline_count], span[id=topics_summary_decline_funding], div[id=topics_summary_decline_org], div[id=topics_summary_decline_t1], div[id=topics_summary_decline_pge], div[id=topics_summary_decline_year]').html('');
+	$('span[id=topics_summary_propose_count], span[id=topics_summary_propose_funding], div[id=topics_summary_propose_org], div[id=topics_summary_propose_t1], div[id=topics_summary_propose_pge], div[id=topics_summary_propose_year]').html('');
 
 	//disable buttons
 	$('a[id^=topics_submit]').addClass('disabled');	
@@ -254,9 +310,9 @@ function loadTopics(queryparams,includefilter) {
 		var filter_status = $('input[name=filter_status]:checked').val();
 		//if decline or other is checked, show decline tab
 		if (filter_status=='completed') {
-			$('#topics_summary_award').show();		
+			$('#topics_summary_award_container').show();		
 			if (proposalaccessallowed) {
-				$('#topics_summary_decline').show();					
+				$('#topics_summary_decline_container').show();					
 			}
 		}
 	});
@@ -332,9 +388,8 @@ function initTopics(rawdata,includefilter) {
         "oTableTools": {
             "aButtons": [
                 {
-                    "sExtends":    "collection",
-                    "sButtonText": "Export as CSV",
-                    "aButtons":    [ "csv" ]
+                    "sExtends":    "csv",
+                    "sButtonText": "Export as CSV"
                 }
             ]
         },
@@ -458,6 +513,27 @@ function showTopicDetails(topic) {
 		var queryparams = '';
 		//years
 		queryparams = 'year='+$('select[name=filter_year_from] option:selected').val()+'-'+$('select[name=filter_year_to] option:selected').val();		
+		//status
+		var tmp = '';
+		if ($('input[name=filter_status]:checked').val()=='completed') {
+			tmp = 'award';
+			if (proposalaccessallowed) tmp += ',decline';
+	    } else if (proposalaccessallowed) {
+			tmp += 'propose';
+		}
+		queryparams += '&status='+tmp;			
+		//division/pge code
+//console.log($('#divisions_table').length);		
+		if ($('#divisions_table').length>0) {
+			var oTable = $('#divisions_table').dataTable();		
+			var selectedRows = fnGetSelected(oTable);
+	//console.log(selectedRows);
+			var selected_orgs = _.pluck(selectedRows, 0);
+			//pge codes
+			if ($("input[name=filter_pge_type]:checked").val()!='all' && $('input[name=filter_pge]').val()) selected_orgs.push($('input[name=filter_pge]').val().replace(/ /gi, ""));
+			if (selected_orgs.length>0) queryparams += '&org='+selected_orgs.join(',');					
+		}
+		//t1
 		queryparams += '&t1='+topicid;
 		//now show it
 		var params = queryparams+"&summ=org,status,pge";
@@ -609,10 +685,10 @@ function updateTopicSummary(rawdata) {
 	$('#topics_summary_award_funding').html(formatFunding(_.reduce(filtered, function(memo, row){ return memo + row[4]; }, 0)));
 	//show ranked topics
 	//sort by awards
-	_.sortBy(filtered,function(row) { return row[3];});
+	filtered = _.sortBy(filtered,function(row) { return row[4];}).reverse();
 //console.log(collated);	
-	//use only top 3
-	var top = _.first(filtered,3)
+	//use only top x
+	var top = _.first(filtered,8)
 //console.log(top);
 	//make into display array
 	var summary = _.map(top,function(row) {
@@ -622,10 +698,12 @@ function updateTopicSummary(rawdata) {
 //console.log(summary);	
 	//display
 	//clear first
-	$('#topics_summary_award_t1 li').remove();
-	_.each(summary, function(item) {
-		$($('#topics_summary_rank_template').tmpl(item)).appendTo('#topics_summary_award_t1');
-	});
+	//$('#topics_summary_award_t1 li').remove();
+	//_.each(summary, function(item) {
+	//	$($('#topics_summary_rank_template').tmpl(item)).appendTo('#topics_summary_award_t1');
+	//});
+	//display
+	showTopicSummaryBreakdown(summary,'award','t1','funding','Funding by Topic','(top 8)');
 	
 	//next filter by status - decline
 	var filtered = _.filter(rawdata, function(item) { return item[5]>0; });
@@ -633,10 +711,10 @@ function updateTopicSummary(rawdata) {
 	$('#topics_summary_decline_funding').html(formatFunding(_.reduce(filtered, function(memo, row){ return memo + row[7]; }, 0)));
 	//show ranked topics
 	//sort by awards
-	_.sortBy(filtered,function(row) { return row[5];});
+	filtered = _.sortBy(filtered,function(row) { return row[5];}).reverse();
 //console.log(collated);	
-	//use only top 3
-	var top = _.first(filtered,3)
+	//use only top x
+	var top = _.first(filtered,8)
 //console.log(top);
 	//make into display array
 	var summary = _.map(top,function(row) {
@@ -645,10 +723,12 @@ function updateTopicSummary(rawdata) {
 	});
 	//display
 	//clear first
-	$('#topics_summary_decline_t1 li').remove();
-	_.each(summary, function(item) {
-		$($('#topics_summary_rank_template').tmpl(item)).appendTo('#topics_summary_decline_t1');
-	});
+	//$('#topics_summary_decline_t1 li').remove();
+	//_.each(summary, function(item) {
+	//	$($('#topics_summary_rank_template').tmpl(item)).appendTo('#topics_summary_decline_t1');
+	//});
+	//display
+	showTopicSummaryBreakdown(summary,'decline','t1','count','Declines by Topic','(top 8)');
 	
 	//last filter by status - propose
 	var filtered = _.filter(rawdata, function(item) { return item[6]>0; });
@@ -657,10 +737,10 @@ function updateTopicSummary(rawdata) {
 //console.log(filtered);
 	//show ranked topics
 	//sort by awards
-	_.sortBy(filtered,function(row) { return row[6];});
+	filtered = _.sortBy(filtered,function(row) { return row[7];}).reverse();
 //console.log(collated);	
-	//use only top 3
-	var top = _.first(filtered,3)
+	//use only top x
+	var top = _.first(filtered,8)
 //console.log(top);
 	//make into display array
 	var summary = _.map(top,function(row) {
@@ -669,11 +749,13 @@ function updateTopicSummary(rawdata) {
 	});
 	//display
 	//clear first
-	$('#topics_summary_propose_t1 li').remove();
-	_.each(summary, function(item) {
-		$($('#topics_summary_rank_template').tmpl(item)).appendTo('#topics_summary_propose_t1');
-	});
-
+	//$('#topics_summary_propose_t1 li').remove();
+	//_.each(summary, function(item) {
+	//	$($('#topics_summary_rank_template').tmpl(item)).appendTo('#topics_summary_propose_t1');
+	//});
+	//display
+	showTopicSummaryBreakdown(summary,'propose','t1','funding','Requests by Topic','(top 8)');
+	
 	$('#topics_submit_awards').removeClass('disabled');
 	$('#topics_submit_declines').removeClass('disabled');	
 	$('#topics_submit_proposed').removeClass('disabled');
@@ -687,6 +769,23 @@ Param: rawdata (array)
 
 Returns: nothing
 */
+/*function updateTopicSummaryData(rawdata,selected_topics,group) {
+//console.log(rawdata);
+//console.log(selected_topics);	
+	//compute the summaries
+	//first filter by selected topics
+	var filtered = _.filter(rawdata, function(item) { return $.inArray(item['t1'],selected_topics)!=-1; });
+//console.log(filtered);	
+	//show by rank
+	setTopicSummaryRanked(filtered,'award',group);
+	setTopicSummaryRanked(filtered,'decline',group);
+	setTopicSummaryRanked(filtered,'propose',group);
+
+	$('#topics_summary_award_'+group+'_loader').hide();
+	$('#topics_summary_decline_'+group+'_loader').hide();
+	$('#topics_summary_propose_'+group+'_loader').hide();
+} */
+//graph
 function updateTopicSummaryData(rawdata,selected_topics,group) {
 //console.log(rawdata);
 //console.log(selected_topics);	
@@ -726,6 +825,7 @@ function summarizeTopicBy(topicid, value, list) {
 	},{"t1":topicid,"key":value,"count_awarded":0,"count_declined":0,"count_other":0,"funding_awarded":0,"funding_requested":0})
 }
 
+/*
 function setTopicSummaryRanked(rawdata,status,group) {
 	//first filter by status
 	var filtered = _.filter(rawdata, function(item) { if (status=='award') return item['count_awarded']>0; else if (status=='decline') return item['count_declined']>0; else return item['count_other']>0; });
@@ -771,7 +871,149 @@ function setTopicSummaryRanked(rawdata,status,group) {
 	});
 	
 }
+*/
+function setTopicSummaryRanked(rawdata,status,group) {
+	//first filter by status
+	var filtered = _.filter(rawdata, function(item) { if (status=='award') return item['count_awarded']>0; else if (status=='decline') return item['count_declined']>0; else return item['count_other']>0; });
+//console.log(filtered);
+	
+	//group by org
+	var grouped = _.groupBy(filtered, "key");
+//console.log(grouped);	
+	//compute totals
+	var collated = [];
+	for (var key in grouped) {
+		collated.push(_.reduce(grouped[key], function(memo, row) {
+			var tkey = key;
+			var lookup = '';
+			//format
+			//if (group=='pge') { tkey = 'p'+key; lookup = 'pgecode_lookup_'+key; }
+			var funding = 0;
+			if (status=="award") {
+				funding = row["funding_awarded"];
+				var count = row["count_awarded"];
+			} else {
+				funding = row["funding_requested"];
+				if (status=="decline") {
+					var count = row["count_declined"];				
+				} else {
+					var count = row["count_other"];				
+				}
+			}
+			return {"key":tkey,"lookup":lookup,"label":'',"count":memo["count"]+count,"funding":memo["funding"]+funding};
+		},{"key":key,"lookup":'',"label":'',"count":0,"funding":0}));
+	}
+	//now strip out any pge codes where there was no funding
+	collated = _.filter(collated, function(row) { return row['count'] > 0; });
+//console.log(collated);	
+	//sort by awards
+	if (group=='year') var top = _.sortBy(collated,function(row) { return parseInt(row["key"]); });
+	else {
+		if (status=='decline') collated = _.sortBy(collated,function(row) { return row["count"]; }).reverse();
+		else collated = _.sortBy(collated,function(row) { return row["funding"]; }).reverse();
+		//use only top x
+		var top = _.first(collated,8);
+	}
+//console.log(top);		
+//console.log(collated);
+	if (status=='award') {
+		var value = 'funding';
+		if (group=='pge') { var title = 'Funding by PGE Codes'; var subtitle = '(top 8)'; }
+		else if (group=='org') { var title = 'Funding by Division'; var subtitle = '(top 8)'; }
+		else if (group=='year') { var title = 'Funding over Time'; var subtitle = ''; }		
+	} else if (status=='decline') {
+		var value = 'count';
+		if (group=='pge') { var title = 'Declines by PGE Codes'; var subtitle = '(top 8)'; }
+		else if (group=='org') { var title = 'Declines by Division'; var subtitle = '(top 8)'; }
+		else if (group=='year') { var title = 'Declines over Time'; var subtitle = ''; }		
+	} else {
+		var value = 'funding';
+		if (group=='pge') { var title = 'Requests by PGE Codes'; var subtitle = '(top 8)'; }
+		else if (group=='org') { var title = 'Requests by Division'; var subtitle = '(top 8)'; }
+		else if (group=='year') { var title = 'Requests over Time'; var subtitle = ''; }
+	}
+	//display
+	showTopicSummaryBreakdown(top,status,group,value,title,subtitle);
+}
 
+function showTopicSummaryBreakdown(data,status,group,value,title,subtitle) {
+//console.log(title);
+//console.log(data);
+	if (data.length==0) return; //don't do anything if we have nothing to do
+	
+	var color = '#4572A7';
+	if (status=='decline') color = '#a94444';
+	//display
+	var categories = _.pluck(data,'key');
+	var values = _.pluck(data,value);
+//console.log(categories);	
+//console.log(values);	
+//console.log(funding);	
+	//clear first
+	$('#topics_summary_'+status+'_'+group).html('');
+	//create the high charts container
+	var chart = new Highcharts.Chart({
+       chart: {
+          renderTo: 'topics_summary_'+status+'_'+group,
+          type: 'bar',
+		  height: 200
+       },
+       title: {
+          text: title
+       },
+	   subtitle: {
+		  text: subtitle
+	},
+       xAxis: {
+          categories: categories,
+		  labels: {
+			formatter: function() {
+				if (group=='pge') return '<span id="pgecode_lookup_'+this.value+'" title="">p'+this.value+'</span>';
+				else if (group=='t1') {
+					var val = this.value;
+					var t1 = _.find(data,function(row) { return row["key"]==val; });
+					return '<span title="'+t1['label']+'">'+this.value+'</span>';
+				}
+				else return this.value;
+			},
+			useHTML: true
+		}
+       },
+       yAxis: {
+          title: {
+             text: ''
+          }
+       },
+	   tooltip: {
+         formatter: function() {
+            if (status=='decline') return this.series.name +': '+this.y;
+			else return this.series.name +': '+ formatFunding(this.y);
+         }
+       },
+	   legend: {
+		  enabled: false
+	   },
+      plotOptions: {
+         bar: {
+            dataLabels: {
+               enabled: true,
+	            formatter: function() {
+	               if (status=='decline') return this.y;
+				   else return formatFunding(this.y);
+	            }
+            }
+         }
+      },
+       series: [{
+          name: value.charAt(0).toUpperCase() + value.slice(1),
+          data: values,
+		  color: color		
+       }],
+	   credits: {
+		enabled: false
+		}
+    });		
+}
 /** researchers data tab handling functions **/
 //init Researchers
 function initResearchers(data) {
@@ -860,14 +1102,80 @@ function initResearchers(data) {
 	}		
 }
 
-function showResearcherDetails(researcher,eventvar) {
+function selectResearcher(researcher,eventvar) {
 	var oTable = $('#researchers_table').dataTable();
-    var aData = oTable.fnGetData(researcher); // get datarow
 //console.log(fnGetSelected(oTable));
 
+	//if the show details link was clicked trap that		
+   if(eventvar.target.nodeName == "A"){
+		if (!$(eventvar.target).hasClass('researcher_details')) {		
+			return;
+		} else {
+			//toggle details
+			if (researcher != null) {
+				var pData = oTable.fnGetData(researcher);
+				if ( $(eventvar.target).html().match('Hide') )
+				{
+					hideResearcherDetails(oTable,researcher,$(eventvar.target),pData[0]);
+				}
+				else
+				{
+					$(eventvar.target).html('Hide');
+					//set the class
+					$(eventvar.target).removeClass('show-details');
+					$(eventvar.target).addClass('hide-details');
+
+					oTable.fnOpen(researcher, "<div class='dataInnerts overflow' id='pi_" + pData[0] + "'><span id='pi_loader_"+pData[0]+"' class='loader'>Loading...</span><table><tr><td class='pi_details_user' id='userDetails_"+pData[0]+"'></td><td class='pi_details_prop'><span id='pi_summary_loader_"+pData[0]+"' class='loader'>Loading...</span><span id='pi_proposal_summary_"+pData[0]+"'></span></td><td><strong>Patents: <span id='pi_patents_loader_"+pData[0]+"'>Loading...</span></strong><span id='pi_patent_summary_"+pData[0]+"'></span></td></tr></table><table class='pi_details_proplist' id='pi_propList_"+pData[0]+"'></table><div id='pi_patents_" + pData[0] + "'><h3>Patents:</h3><table class='dataInnerts'><thead><tr><th>ID</th><th>Title</th><th>Application Year</th><th>Grant Year</th><th>Assignee</th></thead><tbody id='patents_rows_" + pData[0] + "'></tbody></table></div></div>", 'details' );
+					showResearcherDetails(oTable,researcher,pData[0]);										
+				}
+			}
+			//showResearcherDetails(oTable,researcher,$(eventvar.target));
+		}
+		eventvar.preventDefault();
+	} else {
+		var elem = $('a[class*="researcher_details"]', researcher);
+//console.log(elem);			
+		//toggle details
+		if (researcher != null) {
+			var pData = oTable.fnGetData(researcher);
+			if ( elem.html().match('Hide') )
+			{
+				hideResearcherDetails(oTable,researcher,elem,pData[0]);
+			}
+			else
+			{
+				elem.html('Hide');
+				//set the class
+				elem.removeClass('show-details');
+				elem.addClass('hide-details');
+
+				oTable.fnOpen(researcher, "<div class='dataInnerts overflow' id='pi_" + pData[0] + "'><span id='pi_loader_"+pData[0]+"' class='loader'>Loading...</span><table><tr><td class='pi_details_user' id='userDetails_"+pData[0]+"'></td><td class='pi_details_prop'><span id='pi_summary_loader_"+pData[0]+"' class='loader'>Loading...</span><span id='pi_proposal_summary_"+pData[0]+"'></span></td><td><strong>Patents: <span id='pi_patents_loader_"+pData[0]+"'>Loading...</span></strong><span id='pi_patent_summary_"+pData[0]+"'></span></td></tr></table><table class='pi_details_proplist' id='pi_propList_"+pData[0]+"'></table><div id='pi_patents_" + pData[0] + "'><h3>Patents:</h3><table class='dataInnerts'><thead><tr><th>ID</th><th>Title</th><th>Application Year</th><th>Grant Year</th><th>Assignee</th></thead><tbody id='patents_rows_" + pData[0] + "'></tbody></table></div></div>", 'details' );					
+				showResearcherDetails(oTable,researcher,pData[0]);
+			}
+		}
+		//showResearcherDetails(oTable,researcher,elem);
+	}
+	
+    var aData = oTable.fnGetData(researcher); // get datarow
+    if (null != aData)  // null if we clicked on title row
+    {
+		//set the class
+		if ( $(researcher).hasClass('row_selected') ) {
+			$(researcher).removeClass('row_selected');
+			$(researcher).removeClass('DTTT_selected');
+		} else {
+			$(researcher).addClass('row_selected');
+			$(researcher).addClass('DTTT_selected');
+		}
+		//updateResearcherSummary(aData,$(researcher).hasClass('row_selected'));			
+    }
+}
+
+function showResearcherDetails(oTable,pi_node,id) {
 	//load prop data for selected pis so we can calculate summaries and rankings
+    //var aData = oTable.fnGetData(researcher); // get datarow
 	var filtered_propids = [];
-	var tmp_propids = aData[5];
+/*	var tmp_propids = pData[5];
 	//make array out of string
 	if (tmp_propids) propids = tmp_propids.split(',');
 	//now load the data for each propid if it is not already loaded
@@ -880,115 +1188,186 @@ function showResearcherDetails(researcher,eventvar) {
 			if (params) params += ',';
 			params += propid;
 		}
-	}
+	}*/
 //console.log(params);
 
-	//if the show details link was clicked trap that		
-   if(eventvar.target.nodeName == "A"){
-		if ($(eventvar.target).hasClass('researcher_details')) {		
-			var pi_node = researcher;
-			if (pi_node != null) {
-				var pData = oTable.fnGetData(pi_node);
-				if ( $(eventvar.target).html().match('Hide') )
-				{
-					$(eventvar.target).html('Show');
-					//set the class
-					$(eventvar.target).removeClass('hide-details');
-					$(eventvar.target).addClass('show-details');
-					$("#pi_" + pData[0]).slideUp(function() {
-						oTable.fnClose(pi_node);
-					});
-				}
-				else
-				{
-					$(eventvar.target).html('Hide');
-					//set the class
-					$(eventvar.target).removeClass('show-details');
-					$(eventvar.target).addClass('hide-details');
-					var tr_details = oTable.fnOpen(pi_node, "<div class='dataInnerts overflow' id='pi_" + pData[0] + "'><span id='pi_loader_"+pData[0]+"' class='loader'>Loading...</span><table><tr><td class='pi_details_user' id='userDetails_"+pData[0]+"'></td><td class='pi_details_prop'><span id='pi_summary_loader_"+pData[0]+"' class='loader'>Loading...</span><span id='pi_proposal_summary_"+pData[0]+"'></span></td><td><strong>Patents: <span id='pi_patents_loader_"+pData[0]+"'>Loading...</span></strong><span id='pi_patent_summary_"+pData[0]+"'></span></td></tr></table><table class='pi_details_proplist' id='pi_propList_"+pData[0]+"'></table><div id='pi_patents_" + pData[0] + "'><h3>Patents:</h3><table class='dataInnerts'><thead><tr><th>ID</th><th>Title</th><th>Application Year</th><th>Grant Year</th><th>Assignee</th></thead><tbody id='patents_rows_" + pData[0] + "'></tbody></table></div></div>", 'details' );
-					$(tr_details).addClass('details');
-					$("#pi_" + pData[0]).hide();
-					$("#pi_" + pData[0]).slideDown();
-					//get pi details
-					//load pi data
-					$.getJSON(apiurl+'user?id=' + pData[0] + '&jsoncallback=?', function(data) {
-						if (data["data"].length>0) {
-							var row = data["data"][0];
-							if (!row["inst"]) { 
-								row["inst"] = {"name":"","dept":""}; 
-							}
-							$($("#personRender").tmpl(row)).appendTo("#userDetails_" + pData[0]);								
-						}
-						$("#pi_loader_" + pData[0]).hide();
-					});						
-					//get list of all proposals for user
-					//http://readidata.nitrd.gov/star/py/api.py/user?id=000225166&page=prop
-					//extract list of proposals
-					$.getJSON((apiurl+'user?id=' + pData[0]) + '&page=prop' + '&jsoncallback=?', function(data) {
-//console.log(data["data"]);							
-						//extract the proposal ids
-						var propids_awarded = new Array();
-						var propids_declined = [];
-						var propids_proposed = [];
-						if (data["data"]["nsf"]["award"]) propids_awarded = _.pluck(data["data"]["nsf"]["award"]["data"],"nsf_id");
-//console.log(propids_awarded);						
-						if (data["data"]["nsf"]["decline"]) propids_declined = _.pluck(data["data"]["nsf"]["decline"]["data"],"nsf_id");
-//console.log(propids_declined);						
-						if (data["data"]["nsf"]["propose"]) propids_proposed = _.pluck(data["data"]["nsf"]["propose"]["data"],"nsf_id");
-//console.log(propids_proposed);						
-						var propids = propids_awarded.concat(propids_declined.concat(propids_proposed));
-						//console.log(propids);	
-						//now load the proposals
-						if (propids.length>0) {
-							$.getJSON(apiurl + 'proposal?id=' + propids.join(',') + '&jsoncallback=?', function(data) {
-								//for each prop store the data in the cache if it is part of the currently filtered set
-								if (data["data"]) {
-									for (var i in data["data"]) {							
-						//console.log(data["data"][i]["nsf_id"]);
-										if ($.inArray(data["data"][i]["nsf_id"],filtered_propids)!=-1) propsummarydata[data["data"][i]["nsf_id"]] = data["data"][i];
-									}
-								}
-								//render prop list
-								renderPropList('pi',pData[0],data,propids,propids_awarded,propids_declined,propids_proposed,pData[0]);
-							});
-						}							
-					});
-					//patents
-					$.getJSON(apiurl+'user?id=' + pData[0] + '&page=patent' + '&jsoncallback=?', function(data) {
-						if (data["count"]>0) {
-							_.each(data["data"],function(row) {
-								if (!row["title"]) row["title"] = '';
-								$($("#patentRender").tmpl(row)).appendTo("#patents_rows_" + pData[0]);
-							});
-							$("#pi_patents_"+pData[0]).slideDown();
-						} else {
-							$("#pi_patents_"+pData[0]).slideUp();								
-						}
-						$("#pi_patents_loader_" + pData[0]).hide();
-						$("#pi_patent_summary_"+pData[0]).html(data["count"]);
-					});						
-				}
+/*	elem.html('Hide');
+	//set the class
+	elem.removeClass('show-details');
+	elem.addClass('hide-details');
+*/
+	var tr_details = $("#pi_"+id).html();
+	$(tr_details).addClass('details');
+	$("#pi_" + id).hide();
+	$("#pi_" + id).slideDown();
+	//get pi details
+	//load pi data
+	$.getJSON(apiurl+'user?id=' + id + '&jsoncallback=?', function(data) {
+		if (data["data"].length>0) {
+			var row = data["data"][0];
+			if (!row["inst"]) { 
+				row["inst"] = {"name":"","dept":""}; 
 			}
-			eventvar.preventDefault();
-		    return;
-		} else {
-			return;
+			$($("#personRender").tmpl(row)).appendTo("#userDetails_" + id);								
 		}
-	}
+		$("#pi_loader_" + id).hide();
+	});						
+	//get list of all proposals for user
+	//http://readidata.nitrd.gov/star/py/api.py/user?id=000225166&page=prop
+	//extract list of proposals
+	$.getJSON((apiurl+'user?id=' + id) + '&page=prop' + '&jsoncallback=?', function(data) {
+		if (data["count"]>0) {
+//console.log(data["data"]);							
+			//extract the proposal ids
+			var propids_awarded = new Array();
+			var propids_declined = [];
+			var propids_proposed = [];
+			if (data["data"]["nsf"]["award"]) propids_awarded = _.pluck(data["data"]["nsf"]["award"]["data"],"nsf_id");
+//console.log(propids_awarded);						
+			if (data["data"]["nsf"]["decline"]) propids_declined = _.pluck(data["data"]["nsf"]["decline"]["data"],"nsf_id");
+//console.log(propids_declined);						
+			if (data["data"]["nsf"]["propose"]) propids_proposed = _.pluck(data["data"]["nsf"]["propose"]["data"],"nsf_id");
+//console.log(propids_proposed);						
+			var propids = propids_awarded.concat(propids_declined.concat(propids_proposed));
+			//console.log(propids);	
+			//now load the proposals
+			if (propids.length>0) {
+				$.getJSON(apiurl + 'proposal?id=' + propids.join(',') + '&jsoncallback=?', function(data) {
+					//for each prop store the data in the cache if it is part of the currently filtered set
+					if (data["data"]) {
+						for (var i in data["data"]) {							
+//console.log(data["data"][i]["nsf_id"]);
+							if ($.inArray(data["data"][i]["nsf_id"],filtered_propids)!=-1) propsummarydata[data["data"][i]["nsf_id"]] = data["data"][i];
+						}
+					}
+					//render prop list
+					renderPropList('pi',id,data,propids,propids_awarded,propids_declined,propids_proposed,id);
+				});
+			}										
+		} else {
+			//now display
+			$("#pi_summary_loader_" + id).hide();
+			var html = '';
+			html += '<strong>Total: 0</strong><br />';
+			$('#pi_proposal_summary_'+id).html(html);												
+		}
+	});
+	//patents
+	$.getJSON(apiurl+'user?id=' + id + '&page=patent' + '&jsoncallback=?', function(data) {
+		if (data["count"]>0) {
+			var count = data["count"];
+			_.each(data["data"],function(row) {
+				if (!row["title"]) row["title"] = '';
+				$($("#patentRender").tmpl(row)).appendTo("#patents_rows_" + id);
+			});
+			$("#pi_patents_"+id).slideDown();
+		} else {
+			var count = 0;
+			$("#pi_patents_"+id).slideUp();								
+		}
+		$("#pi_patents_loader_" + id).hide();
+		$("#pi_patent_summary_"+id).html(count);
+	});	
+}
 
-    //var aData = oTable.fnGetData(researcher); // get datarow
-    if (null != aData)  // null if we clicked on title row
-    {
-		//set the class
-		if ( $(researcher).hasClass('row_selected') ) {
-			$(researcher).removeClass('row_selected');
-			$(researcher).removeClass('DTTT_selected');
-		} else {
-			$(researcher).addClass('row_selected');
-			$(researcher).addClass('DTTT_selected');
-		}
-		updateResearcherSummary(aData,$(researcher).hasClass('row_selected'));			
-    }
+function hideResearcherDetails(oTable,pi_node,elem,id) {
+	elem.html('Show');
+	//set the class
+	elem.removeClass('hide-details');
+	elem.addClass('show-details');
+	$("#pi_" + id).slideUp(function() {
+		oTable.fnClose(pi_node);
+	});
+}
+
+function summarizeResearchers(data) {
+	//group by state
+	var grouped = _.groupBy(data,function(row) { if (row["address"] && row["address"]["state"]) return row["address"]["state"]; });
+//console.log(grouped);			
+	//now put it together
+	var collated = [];
+	for (var key in grouped) {
+		//get the institution id for all the institutions in this state
+		var count = grouped[key].length;
+		//add up the totals
+		if (count>0 && states[key]) collated.push([states[key],count]);
+	}
+//console.log(collated);			
+//console.log('drawing chart');
+	var data = new google.visualization.DataTable();
+	data.addRows(collated.length);
+	data.addColumn('string', 'State');
+	data.addColumn('number', 'Researchers');
+	//data.addRows(collated);
+	_.each(collated, function(value,key) {
+//console.log(key)
+//console.log(value);		
+		data.setValue(key,0,value[0]);
+		data.setValue(key,1,value[1]);
+	});
+	var geochart = new google.visualization.GeoChart(document.getElementById('data_summary_researchers_map'));
+	option = {
+	  width: 265, 
+	  height: 175, 
+	  region: 'US', 
+	  resolution: 'provinces',
+	  displayMode: 'regions',
+	  datalessRegionColor: 'f9f9f9',
+	  colorAxis: {
+	    colors: ['#E4F1D8', '#1F8F54']
+	  }
+	}
+	$('#data_summary_researchers_loader').hide();
+	geochart.draw(data, option);				
+
+	//also show a graph, just to be fancy
+	//create the high charts container
+	collated = _.sortBy(collated,function(row) { return row[1]; }).reverse();
+	var categories = _.pluck(collated,0);
+	var values = _.pluck(collated,1);
+	//dynamically calculate height of chart
+	var height = (30*categories.length)+100; //30px
+	var chart = new Highcharts.Chart({
+	    chart: {
+	       renderTo: 'data_summary_researchers_graph',
+	       type: 'bar',
+	 height: height
+	    },
+	    title: {
+	       text: null
+	    },
+	 subtitle: {
+	 text: null
+	},
+	    xAxis: {
+	       categories: categories
+	    },
+	    yAxis: {
+	       title: {
+	          text: ''
+	       }
+	    },
+	 legend: {
+	 enabled: false
+	 },
+	   plotOptions: {
+	      bar: {
+	         dataLabels: {
+	            enabled: true,
+	          formatter: function() {
+	             return this.y;
+	          }
+	         }
+	      }
+	   },
+	    series: [{
+	       name: 'Researchers',
+	       data: values
+	    }],
+	 credits: {
+	enabled: false
+	}
+	 });		
 }
 
 /* update summary */

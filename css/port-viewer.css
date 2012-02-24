@@ -93,7 +93,7 @@ cursor: default;
 .portheader strong { display: block; height: 14px; overflow: hidden; width: 100%; }
 
 
-a.change-selection {
+.change-selection {
 position: absolute;
 right: 10px;
 font-weight: normal;
@@ -126,14 +126,14 @@ color: #fff;
 background: #187042;
 }
 
-#topics_summary .left { width: 80px; }
-#topics_summary .right { width: 720px; }
+#topics_summary .left, #classes_summary .left { width: 80px; }
+#topics_summary .right, #classes_summary .right { width: 720px; }
 
 #topics_summary_selected span,
-#topics_summary_selected strong { display: inline; }
+#topics_summary_selected strong, #classes_summary_selected span, #classes_summary_selected strong { display: inline; }
 
-#topics_summary_selected span { margin-right: 10px; }
-#topics_summary_selected strong { margin-right: 3px; }
+#topics_summary_selected span, #classes_summary_selected span { margin-right: 10px; }
+#topics_summary_selected strong, #classes_summary_selected strong { margin-right: 3px; }
 
 #results_container .portheader h2 {
 width: auto;
@@ -324,6 +324,10 @@ border: 0;
 padding: 0;
 margin-left: 10px;
 }
+
+.container_full_width {
+	margin: 0 10px;
+}
 /*
 
 .datacol-left-inner {
@@ -480,7 +484,7 @@ padding: 6px 8px;
 }
 
 .explore,
-.datacol-right .summary h2 #topics_selection_clear {
+.datacol-right .summary h2 #topics_selection_clear, .datacol-right .summary h2 #classes_selection_clear {
 position: absolute;
 top: 3px;
 right: 3px;
@@ -496,7 +500,7 @@ padding: 3px 10px;
 text-decoration: none;
 }
 
-.datacol-right .summary h2 #topics_selection_clear {
+.datacol-right .summary h2 #topics_selection_clear, .datacol-right .summary h2 #classes_selection_clear  {
 top: -35px;
 left: -115px;
 width: 85px;
@@ -539,6 +543,13 @@ width: 206px;
 float: left;
 }
 
+.datacol-right .summary .summary-item div {
+margin: 0;
+padding: 0;
+width: 206px;
+float: left;
+}
+
 .port-data-inner h2 {
 padding-left: 15px;
 }
@@ -554,7 +565,7 @@ margin: 0;
 padding: 0;
 }
 
-li.expanded .change-selection,
+/*li.expanded .change-selection,*/
 .disabled,
 .form-submit a.change-selection.disabled,
 .rcol-action-button a.disabled {
@@ -643,26 +654,26 @@ top: 0px;
 left: 10px;
 }
 
-#patents_table_length {
+/*#patents_table_length {
 position: absolute;
 top: 0px;
 left: 220px;
-}
+}*/
 
 .datatables {
 width: 100%;
 }
 
-#patents_table td:nth-child(1) {
+/*#patents_table td:nth-child(1) {
 font-weight: bold;
-}
+}*/
 
-#patents_table td {
-}
+/*#patents_table td {
+}*/
 
-#patents_table td:nth-child(8) {
+/*#patents_table td:nth-child(8) {
 width: 150px;
-}
+}*/
 
 .dataTables_wrapper .ui-buttonset button {
 padding: 3px 5px;

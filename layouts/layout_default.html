@@ -36,6 +36,8 @@
 	<script src="js/lib/jquery.tools.min.js"></script>
 	<script src="js/lib/jquery.sparkline.min.js"></script>
 	<script src="js/lib/jquery.qtip-1.0.0-rc3.min.js"></script>
+	<script src="js/lib/Highcharts-2.1.7/js/highcharts.js"></script>
+	<script type='text/javascript' src='https://www.google.com/jsapi'></script>
 
 </head>
 <body>
@@ -97,105 +99,91 @@
 </script>
 
 <script id="topics_summary_template" type="text/x-jquery-tmpl">
-<div class="summary-block" id="topics_summary_award">
+<div class="summary-block" id="topics_summary_award_container">
 	<div class="summary-header">
 		<h3>Awarded (<span id="topics_summary_award_count"></span>)</h3>
 		<a href="#" class="explore" id="topics_submit_awards">Explore</a>
 	</div>
-	<div class="summary-block-content">
+	<div class="summary-block-content" id="topics_summary_award">
 	<p class="intro">Total Funding: <span id="topics_summary_award_funding"></span></p>
-	<p class="intro">Highest Values (Funding/Awards):</p>
+	<!--<p class="intro">Highest Values (Funding/Awards):</p>-->
 		<div class="summary-item">
-		<strong>Divs</strong>
+		<!--<strong>Divs</strong>-->
 				<span id="topics_summary_award_org_loader" class="loader" style="display:none;">Updating...</span>
-				<ul id="topics_summary_award_org">
-				</ul>
+				<div id="topics_summary_award_org"></div>
 		</div><!-- /summary-item -->
 		<div class="summary-item">
-		<strong>Topics</strong>
-				<ul id="topics_summary_award_t1">
-				</ul>
+		<!--<strong>Topics</strong>-->
+				<div id="topics_summary_award_t1"></div>
 		</div><!-- /summary-item -->
 		<div class="summary-item">
-		<strong>PGEs</strong>
+		<!--<strong>PGEs</strong>-->
 				<span id="topics_summary_award_pge_loader" class="loader" style="display:none;">Updating...</span>
-				<ul id="topics_summary_award_pge">
-				</ul>
+				<div id="topics_summary_award_pge"></div>
 		</div><!-- /summary-item -->
 		<div class="summary-item">
-		<strong>Time</strong>
+		<!--<strong>Time</strong>-->
 				<span id="topics_summary_award_year_loader" class="loader" style="display:none;">Updating...</span>
-				<ul id="topics_summary_award_year">
-				</ul>
+				<div id="topics_summary_award_year"></div>
 		</div><!-- /summary-item -->
-
 	</div><!-- /summary-block-content -->
 </div><!-- /summary-block -->
 
-<div class="summary-block" id="topics_summary_decline">
+<div class="summary-block" id="topics_summary_decline_container">
 	<div class="summary-header">
 		<h3>Declined (<span id="topics_summary_decline_count"></span>)</h3>
 		<a href="#" class="explore" id="topics_submit_declines">Explore</a>
 	</div>
-	<div class="summary-block-content">
-	<p class="intro">Total Funding: <span id="topics_summary_decline_funding"></span></p>
-	<p class="intro">Highest Values (Awards Declined):</p>
+	<div class="summary-block-content" id="topics_summary_decline">
+	<!--<p class="intro">Highest Values (Awards Declined):</p>-->
 		<div class="summary-item">
-		<strong>Divs</strong>
+		<!--<strong>Divs</strong>-->
 				<span id="topics_summary_decline_org_loader" class="loader" style="display:none;">Updating...</span>
-				<ul id="topics_summary_decline_org">
-				</ul>
+				<div id="topics_summary_decline_org"></div>
 		</div><!-- /summary-item -->
 		<div class="summary-item">
-		<strong>Topics</strong>
-				<ul id="topics_summary_decline_t1">
-				</ul>
+		<!--<strong>Topics</strong>-->
+				<div id="topics_summary_decline_t1"></div>
 		</div><!-- /summary-item -->
 		<div class="summary-item">
-		<strong>PGEs</strong>
+		<!--<strong>PGEs</strong>-->
 				<span id="topics_summary_decline_pge_loader" class="loader" style="display:none;">Updating...</span>
-				<ul id="topics_summary_decline_pge">
-				</ul>
+				<div id="topics_summary_decline_pge"></div>
 		</div><!-- /summary-item -->
 		<div class="summary-item">
-		<strong>Time</strong>
+		<!--<strong>Time</strong>-->
 				<span id="topics_summary_decline_year_loader" class="loader" style="display:none;">Updating...</span>				
-				<ul id="topics_summary_decline_year">
-				</ul>
+				<div id="topics_summary_decline_year"></div>
 		</div><!-- /summary-item -->
 	</div><!-- /summary-block-content -->
 </div><!-- /summary-block -->
 
-<div class="summary-block" id="topics_summary_propose">
+<div class="summary-block" id="topics_summary_propose_container">
 	<div class="summary-header">
 		<h3>Other (<span id="topics_summary_propose_count"></span>)</h3>
 		<a href="#" class="explore" id="topics_submit_proposed">Explore</a>
 	</div>
-	<div class="summary-block-content">
+	<div class="summary-block-content" id="topics_summary_propose">
 	<p class="intro">Total Funding: <span id="topics_summary_propose_funding"></span></p>
-	<p class="intro">Highest Values (Other):</p>
+	<!--<p class="intro">Highest Values (Other):</p>-->
 		<div class="summary-item">
-		<strong>Divs</strong>
+		<!--<strong>Divs</strong>-->
 				<span id="topics_summary_propose_org_loader" class="loader" style="display:none;">Updating...</span>
-				<ul id="topics_summary_propose_org">
-				</ul>
+				<div id="topics_summary_propose_org"></div>
 		</div><!-- /summary-item -->
 		<div class="summary-item">
-		<strong>Topics</strong>
-				<ul id="topics_summary_propose_t1">
-				</ul>
+		<!--<strong>Topics</strong>-->
+				<div id="topics_summary_propose_t1"></div>
 		</div><!-- /summary-item -->
 		<div class="summary-item">
-		<strong>PGEs</strong>
+		<!--<strong>PGEs</strong>-->
 			<span id="topics_summary_propose_pge_loader" class="loader" style="display:none;">Updating...</span>
-				<ul id="topics_summary_propose_pge">
-				</ul>
+				<div id="topics_summary_propose_pge"></div>
 		</div><!-- /summary-item -->
 		<div class="summary-item">
-		<strong>Time</strong>
+		<!--<strong>Time</strong>-->
 				<span id="topics_summary_propose_year_loader" class="loader" style="display:none;">Updating...</span>
-				<ul id="topics_summary_propose_year">
-				</ul>
+				<div id="topics_summary_propose_year"></div>
 		</div><!-- /summary-item -->
 	</div><!-- /summary-block-content -->
 </div><!-- /summary-block -->

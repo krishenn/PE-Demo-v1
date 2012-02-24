@@ -66,14 +66,16 @@
 						<option value="2009">2009</option>
 						<option value="2010">2010</option>
 						<option value="2011">2011</option>
+						<option value="2012">2012</option>
 				</select>
 				to
 				<select name="filter_year_to">
 						<option value="2007">2007</option>
 						<option value="2008">2008</option>
 						<option value="2009">2009</option>
-						<option value="2010" selected="selected">2010</option>
-						<option value="2011">2011</option>
+						<option value="2010">2010</option>
+						<option value="2011" selected="selected">2011</option>
+						<option value="2012">2012</option>
 				</select>
 				</div>
 				
@@ -129,11 +131,9 @@
 		</div><!-- /datacol-left -->
 		<div class="datacol-right">
 			<div class="summary"><div class="summary-inner">
-				<h2>Quick Selection Summary <a href="#" id="topics_selection_clear">Clear Selection</a></h2>
+				<h2>Portfolio Summary <a href="#" id="topics_selection_clear">Clear Selection</a></h2>
 				<p class="intro">The below reflects a summary of the Topics you  select/ed on the left. Click the triangle controls for expanded summaries or click the 'Explore'  buttons to analyze your selection deeper.</p>
 				
-<div id="topics_summary_container"></div>
-
 <div class="summary-block">
 	<div class="summary-header">
 		<h3>Institutions (<span id="topics_summary_institutions_count"></span>)</h3>
@@ -148,6 +148,8 @@
 		<a href="#" class="explore" id="topics_submit_researchers">Explore</a>
 	</div>
 </div><!-- /summary-block -->
+
+<div id="topics_summary_container"></div>
 
 			</div></div><!-- /summary -->
 		</div><!-- /datacol-right -->
@@ -237,12 +239,12 @@
 		</div></div><!-- /datacol-left -->
 		<div class="datacol-right">
 			<div class="summary">
-				<div id="data_summary_proposed" class="topic-selection-summary-wrap">
-					<h3>Selection Summary</h2>
-					<p>The below reflects a summary of the items you 
-					         selected on the left.</p>
-				
-					<table id="prop-selection-summary-table" class="topic-selection-summary-table">
+				<div id="data_summary_proposed_container" class="topic-selection-summary-wrap">
+					<h3>Portfolio Summary</h2>
+					<!--<p>The below reflects a summary of the items you 
+					         selected on the left.</p>-->
+					<div id="data_summary_proposed"></div>
+					<!--<table id="prop-selection-summary-table" class="topic-selection-summary-table">
 					  <tr class="heading">
 					    <td class="label"><strong>Selected</strong></td>
 					    <td><div class="header-row-wrap"><strong><span id="summary_proposed">0</span></strong></div></td>
@@ -295,14 +297,14 @@
 					    <td class="label">&nbsp;</td>
 					    <td>&nbsp;</td>
 					  </tr>
-					</table>
+					</table>-->
 				</div>
-				<div id="data_summary_declines" class="topic-selection-summary-wrap">
-					<h3>Selection Summary</h2>
-					<p>The below reflects a summary of the items you 
-					         selected on the left.</p>
-				
-					<table id="prop-selection-summary-table" class="topic-selection-summary-table">
+				<div id="data_summary_declines_container" class="topic-selection-summary-wrap">
+					<h3>Portfolio Summary</h2>
+					<!--<p>The below reflects a summary of the items you 
+					         selected on the left.</p>-->
+					<div id="data_summary_declines"></div>
+					<!--<table id="prop-selection-summary-table" class="topic-selection-summary-table">
 					  <tr class="heading">
 					    <td class="label"><strong>Selected</strong></td>
 					    <td><div class="header-row-wrap"><strong><span id="summary_props">0</span></strong></div></td>
@@ -355,15 +357,16 @@
 					    <td class="label">&nbsp;</td>
 					    <td>&nbsp;</td>
 					  </tr>
-					</table>
+					</table>-->
 				</div>
-				<div id="data_summary_awards" class="topic-selection-summary-wrap">
+				<div id="data_summary_awards_container" class="topic-selection-summary-wrap">
 
-				     <h3>Selection Summary</h3>
-				       <p>The below reflects a summary of the items you 
-				         selected on the left.</p>
+				     <h3>Portfolio Summary</h3>
+				       <!--<p>The below reflects a summary of the items you 
+				         selected on the left.</p>-->
 
-			       <table id="grant-selection-summary-table" class="topic-selection-summary-table">
+				   <div id="data_summary_awards"></div>
+			       <!--<table id="grant-selection-summary-table" class="topic-selection-summary-table">
 			         <tr class="heading">
 			           <td class="label"><strong>Grants Selected</strong></td>
 			           <td><div class="header-row-wrap"><strong><span id="summary_grants">0</span></strong></div></td>
@@ -416,15 +419,17 @@
 			           <td class="label">&nbsp;</td>
 			           <td>&nbsp;</td>
 			         </tr>
-			       </table>
+			       </table>-->
 				</div>
-				<div id="data_summary_researchers" class="topic-selection-summary-wrap">
+				<div id="data_summary_researchers_container" class="topic-selection-map-wrap">
 
-				     <h3>Selection Summary</h3>
-				       <p>The below reflects a summary of the items you 
-				         selected on the left.</p>
-
-			      <table id="pi-selection-summary-table" class="topic-selection-summary-table">
+				     <h3>Researchers by State</h3>
+				       <!--<p>The below reflects a summary of the items you 
+				         selected on the left.</p>-->
+					<img id="data_summary_researchers_loader" class="loader" style="display:none" src="img/ajax-loader.gif" />
+					<div id="data_summary_researchers_map"></div>
+					<div id="data_summary_researchers_graph"></div>
+			      <!--<table id="pi-selection-summary-table" class="topic-selection-summary-table">
 			         <tr class="heading">
 			           <td class="label"><strong>Researchers Selected</strong></td>
 			           <td><div class="header-row-wrap"><strong><span id="summary_pis">0</span></strong></div></td>
@@ -541,15 +546,18 @@
 			           <td class="label">&nbsp;</td>
 			           <td>&nbsp;</td>
 			         </tr>
-			       </table>
+			       </table>-->
 				</div>
-				<div id="data_summary_institutions" class="topic-selection-summary-wrap">
+				<div id="data_summary_institutions_container" class="topic-selection-map-wrap">
 
-				     <h3>Selection Summary</h3>
-				       <p>The below reflects a summary of the items you 
-				         selected on the left.</p>
+				     <h3>Institutions by State</h3>
+				      <!-- <p>The below reflects a summary of the items you 
+				         selected on the left.</p> -->
+						<img id="data_summary_institutions_loader" class="loader" style="display:none" src="img/ajax-loader.gif" />
+						<div id="data_summary_institutions_map"></div>
+						<div id="data_summary_institutions_graph"></div>
 
-			       <table id="org-selection-summary-table" class="topic-selection-summary-table">
+			       <!--<table id="org-selection-summary-table" class="topic-selection-summary-table">
 			         <tr class="heading">
 			           <td class="label"><strong>Institutions Selected</strong></td>
 			           <td><div class="header-row-wrap"><strong><span id="summary_orgs">0</span></strong></div></td>
@@ -666,7 +674,7 @@
 					  <td class="label">&nbsp;</td>
 					  <td>&nbsp;</td>
 					</tr>
-			       </table>
+			       </table>-->
 
 
 			</div></div><!-- /summary -->

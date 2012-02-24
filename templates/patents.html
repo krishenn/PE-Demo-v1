@@ -1,40 +1,178 @@
-<div class="patents">
-	<h2>Patents</h2>
+<div class="port">
+
+<ul class="port-accordian">
+<!-- --------------------------------------------------------------------------------------------------------------------------------------------------------- Chunk 01 - DIVISIONS -->
+<li class="port-item expanded select" id="divisions_container">
+	<div class="portheader" id="queryform_summary">
+	<h2><a href="#">Select</a></h2>
+		<div id="queryform_summary_expanded">
+		</div>
+		<div id="queryform_summary_collapsed">
+			<ul class="cols">
+				<li class="left">
+					<strong>Divisions: (<em id="queryform_summary_orgs_count_selected"></em> of <u id="queryform_summary_orgs_count"></u>) <span id="queryform_summary_orgs_selected"></span></strong>
+					<strong>PGE Codes: <!-- (<em>1,234</em> of <u>1,234</u>) --><span id="queryform_summary_filter_pge"></span></strong>
+				</li>
+				<li class="right">
+					<strong>Timing: <em id="queryform_summary_filter_year"></em></strong>
+				</li>
+			</ul>
+			<a href="#" class="change-selection" id="queryform_summary_change">Change Selection</a>
+		</div>
+	</div><!-- /portheader -->
+	<form id="queryform">
+	<div class="port-data"><div class="port-data-inner">
+	<h2>Select one or more NSF Divisions and/or Program Element Codes</h2>
 	<div class="intro">
-	<p>This tool shows Patents that were received by NSF/NIH grantees. View Patent data by Division and/or Program Element Codes. The patents displayed are associated with funded NSF PI's. Patents were linked to researchers/inventors by means of fuzzy string matching (PI name weighted by location) within the USPTO derived data base, and is subject to error based on those parameters. Initial patents displayed are NOT necessarily a function of NSF grants.</p>
-	<p><strong>Instructions:</strong> use the freeform text box or the dropdown menu in the first row to select a division. Your selection will appear in the second row; use the red ‘X’ icons to delete selected divisions. Optionally, specify a Program Element Code. Click the “Show Patents” button to continue.</p>
-	<p><strong>Note:</strong> choosing more than one Division or changing the time span to 10 years will significantly slow things down. For best results, use one Division at a time.</p>
-	</div><!-- /intro -->
-</div>
+		<p>The patents displayed are associated with funded NSF PI's. Patents were linked to researchers/inventors by means of fuzzy string matching (PI name weighted by location) within the USPTO-derived database, and is subject to error based on those parameters. Initial patents displayed are NOT necessarily a function of NSF grants.</p>
+		<p><br /><strong>Instructions:</strong> Select an NSF Division below. Optionally, limit your results by one or more Program Element Codes. Click "View Classes" to proceed.</p>
+		<p><br /><strong>Note:</strong> choosing more than one Division or changing the time span to 10 years will significantly slow things down. For best results, use one Division at a time.</p>
+	</div>
+	<div class="datacols">
+		<div class="datacol-left">
+			<div class="tab-nav" id="divisions_tabs">
+				<ul>
+					<li><a href="#divisions_tab1">NSF Divisions</a></li>
+				</ul>
+				<div class="data-tab data-tab1 tab-container" id="divisions_tab1">
+					<div class="table-holder">
+						<img id="divisions_loader" class="loader" style="display:none" src="img/ajax-loader.gif" />						
+						<table id="divisions_table" class="datatables"></table>
+					</div><!-- /table-holder -->
+				</div><!-- /tab-container -->
+			</div><!-- /tab-nav -->			
+					
+		</div><!-- /datacol-left -->
+		<div class="datacol-right">
+			<div class="propfilters"><div class="propfilters-inner">
+				<h3>Filter</h3>
+				<p>The data on the left and on the screens that follow are limited by the Filter criteria below.</p>
+				
+				<h4>Time</h4> 			
+				<div id="filter_year_options">
+				<select name="filter_year">
+					<option selected="" value="2005-2011">Last 5 years</option>
+					<option value="2000-2011">Last 10 years</option>
+				</select>
+				</div>
+				
+				<h4>Prg. Element Code(s)</h4>
+				<ul>
+					<li><label><input type="radio" name="filter_pge_type" value="all" checked="true" /> Include All</label></li>
+					<li><label><input type="radio" name="filter_pge_type" value="some" /> Limit to PGEs:</label> <input type="text" name="filter_pge" /><span>(separate with commas)</span></li>
+				</ul>
+				
+			</div></div><!-- /propfilters -->
+			<div class="rcol-action-button">
+			<span class="right"><a href="#" id="queryform_submit_classes">View Classes</a></span>
+			</div>
+		</div><!-- /datacol-right -->
+	</div><!-- /datacols -->
+	
+	
+	</div></div><!-- /port-data -->
+	</form>
+</li><!-- /port-item -->
 
-<form id="queryform" class="form-patents-select">
+<!-- --------------------------------------------------------------------------------------------------------------------------------------------------------- Chunk 02 - CLASSES -->
+<li class="port-item collapsed topics" id="classes_container">
+	<div class="portheader" id="classes_summary">
+		<h2><a href="#">Classes <span>Filter</span></a></h2>
+		<div id="classes_summary_expanded">&nbsp;</div>
+		<div id="classes_summary_collapsed">
+			<ul class="cols">
+				<li class="left">
+					<strong><em id="classes_summary_count_selected"></em> of <u id="classes_summary_count">23</u></strong>
+				</li>
+				<li class="right" id="classes_summary_selected"></li>
+			</ul>		
+			<a href="#" class="change-selection" id="classes_summary_change">Change Selection</a>
+		</div>		
+	</div><!-- /portheader -->
+	<form id="classes">
+	<div class="port-data"><div class="port-data-inner">
+	<div class="intro">
+	<p>Include patents for selected Classes. Use the Summary sidebar to explore your selection.</p>
+	</div>
+	<div class="datacols">
+		<div class="datacol-left" id="classes_tabs_container">
+			<div class="tab-nav" id="classes_tabs">
+				<ul>
+					<li><a href="#classes_tab1">Classes</a></li>
+				</ul>
+				<div class="data-tab data-tab1" id="classes_tab1">
+					<div class="table-holder">
+						<img id="classes_loader" class="loader" style="display:none" src="img/ajax-loader.gif" />						
+						<table id="classes_table" class="datatables"></table>
+					</div><!-- /table-holder -->
+				</div><!-- /data-tab1 -->
+			</div><!-- /tab-nav -->
+		</div><!-- /datacol-left -->
+		<div class="datacol-right">
+			<div class="summary"><div class="summary-inner">
+				<h2>Patents Summary <a href="#" id="classes_selection_clear">Clear Selection</a></h2>
+				<p class="intro">The below reflects a summary of the Classes you select/ed on the left. Click the 'Explore' button to analyze your selection deeper.</p>
+				
+<div id="classes_summary_container"></div>
 
-<div class="item-wrap"><h4>Select Divisions</h4><input name="filter_org" placeholder="Type the name of a division"> OR <select name="orgs_list"><option value="">Select One</option></select></div>
+<div class="summary-block">
+	<div class="summary-header">
+		<h3>Patents (<span id="classes_summary_patents_count"></span>)</h3>
+		<a href="#" class="explore" id="classes_submit_patents">Explore</a>
+	</div>
+	<div class="summary-block-content" id="classes_summary_patents">
+		<div class="summary-item">
+		<!--<strong>Time</strong>-->
+				<span id="classes_summary_patents_loader" class="loader" style="display:none;">Updating...</span>
+				<div id="classes_summary_patents_year"></div>
+		</div><!-- /summary-item -->
+	</div><!-- /summary-block-content -->
+</div><!-- /summary-block -->
 
-<div class="item-wrap selected-divs"><h4>Selected Divisions</h4> <ul id="selected_orgs"></ul></div>
+			</div></div><!-- /summary -->
+		</div><!-- /datacol-right -->
+	</div><!-- /datacols -->
+	
+	
+	</div></div><!-- /port-data -->
+	</form>
+</li><!-- /port-item -->
+<!-- --------------------------------------------------------------------------------------------------------------------------------------------------------- Chunk 03 - DATA -->
+<li class="port-item collapsed data" id="results_container">
+	<div class="portheader">
+	<h2><a href="#">Patents Viewer</a></h2>
+	</div><!-- /portheader -->
+	<div class="port-data"><div class="port-data-inner">
+	<div class="datacols" id="data_container">
+		<div class="data-tabs">
+			<div class="tab-nav container_full_width" id="data_tabs">
+				<ul>
+					<li><a href="#data_tabs_patents">Patents</a></li>
+				</ul>
+				<div class="data-tab data-tab1" id="data_tabs_patents">
+					<div class="table-holder">
+						<img id="patents_loader" class="loader" style="display:none" src="img/ajax-loader.gif" />						
+						<table id="patents_table" class="datatables"></table>
+					</div><!-- /table-holder -->
+					<div class="table-footnotes">
+						<ul>
+							<li><sup>1</sup>Patents are linked to NSF grantees by fuzzy string matching (weighted heavily by name and location). The data is based on the Patent database, NSF and NIH Grants, and Patent Applications.</li>
+						</ul>
+					</div><!-- /table-footnotes -->				
+				</div><!-- /data-declines -->
+			</div><!-- /tab-nav -->
+		</div><!-- /data-tabs -->
+	</div><!-- /datacols -->
+	
+	
+	</div></div><!-- /port-data -->
+</li><!-- /port-item -->
 
-<div class="item-wrap select-time"><h4>Select Time</h4><select name="filter_year"><option value="2005-2011" selected>Last 5 years</option><option value="2000-2011">Last 10 years</option></select>
-	<div class="select-pges">
-		<h4>Prg. Element Code(s)</h4>
-		<div class="select-pges-inner">
-			<label><input type="radio" name="filter_pge_type" value="all" checked="true" /> Include All</label> <label><input type="radio" name="filter_pge_type" value="some" /> Limit to PGEs:</label> <input type="text" name="filter_pge" /> <small>(separate with commas)</small>
-		</div><!-- /select-pges-inner -->
-	</div><!-- /select-pges -->
-</div><!-- /select-time -->
+</ul>
 
-<div class="form-submit"><a href="#" class="change-selection" id="queryform_submit">Show Patents</a></div>
-</form>
-<br style="clear: left" />
-<img id="patents_loader" class="loader" style="display:none" src="img/ajax-loader.gif" />
-<div id="patents">
-<table id="patents_table" class="datatables"></table>
 
-<div class="table-footnotes">
-	<ul>
-		<li><sup>1</sup>Patents are linked to NSF grantees by fuzzy string matching (weighted heavily by name and location). The data is based on the Patent database, NSF and NIH Grants, and Patent Applications.</li>
-	</ul>
-</div><!-- /table-footnotes -->				
-</div><!-- /patents -->
+</div><!-- /full-width --><br style="clear: left;" />
+
 
 <script src="js/lib/jquery-placeholder/jquery.placeholder.js"></script>
 <script src="js/funcs.js"></script>
