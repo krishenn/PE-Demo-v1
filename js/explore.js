@@ -256,7 +256,7 @@ function init() {
 	/*$('a[id^=division_details_]').live('click',function() {
 		showDivisionDetails(this);
 	});*/
-	$('#divisions_table > tbody > tr:not(.division-details)').live('click', function (event) {
+	$('#divisions_table > tbody > tr:not(.division-details), #divisions_table > tbody > tr:not(.grouprow)').live('click', function (event) {
 //console.log(event.target.nodeName);		
 		//if the show details link was clicked trap that		
 	   if(event.target.nodeName == "A"){
@@ -806,6 +806,7 @@ function initDivisions(rawdata) {
 			tmp["org"] = org;
 			tmp["title"] = divisions[org];
 			tmp["directorate"] = directorates[org]==undefined?'Other':directorates[org];
+			tmp["parentdivision"] = parentdivision[org]==undefined?'':parentdivision[org];
 			collated.push(tmp);
 		}
 	}
@@ -814,7 +815,7 @@ function initDivisions(rawdata) {
 	//collated = _.sortBy(collated,function(row) { return row["title"]; });
 	//prepare for datatable data - conv to array
 	var aaData = _.map(collated, function(row) {
-		return [row["org"], row["title"], row["directorate"], row["count_awarded"],row["funding_awarded"],row["count_declined"],row["count_other"],row["funding_requested"]];
+		return [row["org"], row["title"], row["directorate"], row["count_awarded"],row["funding_awarded"],row["count_declined"],row["count_other"],row["funding_requested"],row["parentdivision"]];
 	});
 //console.log(collated);			
 //console.log(tmp);		
@@ -837,21 +838,32 @@ function initDivisions(rawdata) {
 			var nTrs = $('#divisions_table tbody tr');
 			var iColspan = nTrs[0].getElementsByTagName('td').length;
 			var sLastGroup = "";
+			var sLastSubGroup = "";
 			for ( var i=0 ; i<nTrs.length ; i++ )
 			{
 				var iDisplayIndex = oSettings._iDisplayStart + i;
-				var sGroup = oSettings.aoData[ oSettings.aiDisplay[iDisplayIndex] ]._aData[2];
+				var sGroup = oSettings.aoData[ oSettings.aiDisplay[iDisplayIndex] ]._aData[2]; //directorate
+				var sSubGroup = oSettings.aoData[ oSettings.aiDisplay[iDisplayIndex] ]._aData[8]; //parent division
+		//console.log(sSubGroup);				
 				if ( sGroup != sLastGroup )
 				{
-					var nGroup = document.createElement( 'tr' );
+					/*var nGroup = document.createElement( 'tr' );
 					var nCell = document.createElement( 'td' );
 					nCell.colSpan = iColspan;
 					nCell.className = "group";
 					nCell.innerHTML = sGroup;
 					nGroup.appendChild( nCell );
-					nTrs[i].parentNode.insertBefore( nGroup, nTrs[i] );
+					nTrs[i].parentNode.insertBefore( nGroup, nTrs[i] ); replaced with jquery below */
+					$('<tr class="grouprow"><td class="group" colspan="'+iColspan+'">'+sGroup+'</td></tr>').insertBefore(nTrs[i]);
 					sLastGroup = sGroup;
+					//reset subgroup
+					sLastSubGroup = "";
 				}
+				if (sSubGroup != sLastSubGroup) {
+		//console.log(sSubGroup);					
+					$('<tr class="grouprow"><td class="group" colspan="'+iColspan+'" style="padding-left: 20px;">'+sSubGroup+'</td></tr>').insertBefore(nTrs[i]);
+					sLastSubGroup = sSubGroup;					
+				} 
 			}
 		},
 		"aoColumnDefs": [
@@ -911,12 +923,16 @@ function initDivisions(rawdata) {
 				"aTargets": [ 7 ]
 			},
 			{
+				"bVisible": false,
+				"aTargets": [8]
+			},
+			{
 				"fnRender": function ( oObj ) {
 					return '<a id="division_details_'+oObj.aData[0]+'" class="show-details">Show</a>';
 				},
 				"bSearchable": false,
 				"bSortable": false,
-				"aTargets": [ 8 ]
+				"aTargets": [ 9 ]
 			}
 		],
 		//"aaSortingFixed": [[ 2, 'asc' ]]

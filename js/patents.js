@@ -430,6 +430,7 @@ function initDivisions(rawdata) {
 		tmp["org"] = org;
 		tmp["title"] = divisions[org];
 		tmp["directorate"] = directorates[org]==undefined?'Other':directorates[org];
+		tmp["parentdivision"] = parentdivision[org]==undefined?'':parentdivision[org];
 		collated.push(tmp);
 	}
 //console.log(collated);	
@@ -437,7 +438,7 @@ function initDivisions(rawdata) {
 	//collated = _.sortBy(collated,function(row) { return row["title"]; });
 	//prepare for datatable data - conv to array
 	var aaData = _.map(collated, function(row) {
-		return [row["org"], row["title"], row["directorate"]];
+		return [row["org"], row["title"], row["directorate"],row["parentdivision"]];
 	});
 //console.log(collated);			
 //console.log(tmp);		
@@ -460,21 +461,32 @@ function initDivisions(rawdata) {
 			var nTrs = $('#divisions_table tbody tr');
 			var iColspan = nTrs[0].getElementsByTagName('td').length;
 			var sLastGroup = "";
+			var sLastSubGroup = "";
 			for ( var i=0 ; i<nTrs.length ; i++ )
 			{
 				var iDisplayIndex = oSettings._iDisplayStart + i;
 				var sGroup = oSettings.aoData[ oSettings.aiDisplay[iDisplayIndex] ]._aData[2];
+				var sSubGroup = oSettings.aoData[ oSettings.aiDisplay[iDisplayIndex] ]._aData[3]; //parent 
 				if ( sGroup != sLastGroup )
 				{
-					var nGroup = document.createElement( 'tr' );
+					/*var nGroup = document.createElement( 'tr' );
 					var nCell = document.createElement( 'td' );
 					nCell.colSpan = iColspan;
 					nCell.className = "group";
 					nCell.innerHTML = sGroup;
 					nGroup.appendChild( nCell );
 					nTrs[i].parentNode.insertBefore( nGroup, nTrs[i] );
+					sLastGroup = sGroup; replaced with jquery below */
+					$('<tr><td class="group" colspan="'+iColspan+'">'+sGroup+'</td></tr>').insertBefore(nTrs[i]);
 					sLastGroup = sGroup;
+					//reset subgroup
+					sLastSubGroup = "";
 				}
+				if (sSubGroup != sLastSubGroup) {
+		//console.log(sSubGroup);					
+					$('<tr><td class="group" colspan="'+iColspan+'" style="padding-left: 20px;">'+sSubGroup+'</td></tr>').insertBefore(nTrs[i]);
+					sLastSubGroup = sSubGroup;					
+				} 
 			}
 		},
 		"aoColumnDefs": [

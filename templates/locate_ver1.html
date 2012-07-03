@@ -1,0 +1,2028 @@
+<div class="grid_16 alpha omega exploc">
+		<style>
+		#menu p { margin-top: 10px; margin-bottom: 5px; }
+		</style>
+
+		<script id=topicList type="text/x-jquery-tmpl">
+			<option value="${t1}">${count} granted, (t${t1}) ${words}</option>
+		</script>
+
+	<img id="topic_loader" style="display:none" src="img/ajax-loader.gif" />
+	<form id="queryform" name="queryform" method="post" action="">
+	<div id="navTopics" style="display: none;">
+		<div class="intro">
+			<h3>Expertise Locator <span>This tool can be used to help find experts in particular topics.</span></h3>
+		</div><!-- /intro -->
+		
+		<div class="topic-options">
+		  
+		  <ul>
+		  <li class="first">
+		  	<u>Topic options:</u>
+		  </li>
+		  <li>
+			<strong>From</strong>
+			<select id="year_from" name="year_from">
+				<option value="2007" selected="selected">2007</option>
+				<option value="2008">2008</option>
+				<option value="2009">2009</option>
+				<option value="2010">2010</option>
+				<option value="2011">2011</option>
+			</select> 
+			<strong>to</strong>
+			<select id="year_to" name="year_to">
+				<option value="2007">2007</option>
+				<option value="2008">2008</option>
+				<option value="2009">2009</option>
+				<option value="2010" selected="selected">2010</option>
+				<option value="2011">2011</option>
+			</select> 		  
+		  </li>
+		  <li>
+			<span id="prop_status_container"><input type="checkbox" checked id = "prop_status_award" name = "prop_status" value = "award"><label for="prop_status_award"> Awarded (up to last Fiscal Year)</label></span>
+		    <input type="checkbox" id = "primary_topic" name = "primary_topic" value = true checked style="display: none;"><!-- Use primary topic-->		  
+		  </li>
+		  <li class="last">
+		    <input class="buttonGreen" type="button" value="Update Topic List" onclick="getTopics();" />		  
+		  </li>
+		  </ul>
+		  
+			<span id="message"></span>
+		  </div><!-- /topic-options -->
+		
+		<h2>Topic List <span>Select topics below. The Summary sidebar provides selection summary information. <strong>To view the Researchers</strong> for selected topics, click the &quot;Show&quot; button in the sidebar.</span></h2>
+		<table class="topics-table-wrap">
+	    <tr valign="top">
+	      <td class="topics-table-cell">
+	        <table class="topics-table" id="topics_table"></table>
+		  </td>
+	      <td><div class="topic-selection-summary-wrap">
+
+	      <h3 style="font-size: 18px; font-weight: bold; color: #336699; margin-top: 10px; margin-right: 0pt; margin-bottom: 10px; margin-left: 0pt; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px;">Quick Selection Summary</h3>
+	        <p>The below reflects a summary of the items you 
+	          selected on the left. Click the links below to 
+	          analyze your selection deeper.</p>
+
+	        <table class="topic-selection-summary-table">
+	          <tr class="heading">
+	            <td class="label"><strong>Researchers</strong></td>
+	            <td><div class="header-row-wrap"><span class="num-lg" id="pi_selected_right">0</span><input class="buttonGreen button_view_results" type="button" value="Show" onclick="submitMenu('pi');" style="display: none;" /></div></td>
+	          </tr>
+	          <tr>
+	            <td class="label">&nbsp;</td>
+	            <td>&nbsp;</td>
+	          </tr>
+	          <tr class="heading">
+	            <td class="label"><strong>Topic(s) Selected</strong></td>
+	            <td><div class="header-row-wrap"><strong><span id="topics_selected_right">0</span></strong></div></td>
+	          </tr>
+			  <tr>
+				<td colspan="2">
+					<ul id="topics_selected_list" style="list-style: none;"></li>
+				</td>
+			  </tr>
+	          <tr>
+	            <td>&nbsp;</td>
+	            <td>&nbsp;</td>
+	          </tr>
+	          <tr>
+	            <td class="label">Funded</td>
+	            <td class="value" id="summary_totalfunding">0</td>
+	          </tr>
+	          <tr>
+	            <td class="label">Date first</td>
+	            <td class="value" id="summary_minyear"></td>
+	          </tr>
+	          <tr>
+	            <td class="label">Date last</td>
+	            <td class="value" id="summary_maxyear"></td>
+	          </tr>
+	          <tr>
+	            <td class="label">&nbsp;</td>
+	            <td>&nbsp;</td>
+	          </tr>
+	          <tr>
+	            <td class="label">Top Topic (#)</td>
+	            <td class="value" id="summary_rankedtopics_bycount_1"></td>
+	          </tr>
+	          <tr>
+	            <td class="label">2nd Topic</td>
+	            <td class="value" id="summary_rankedtopics_bycount_2"></td>
+	          </tr>
+	          <tr>
+	            <td class="label">3rd Topic</td>
+	            <td class="value" id="summary_rankedtopics_bycount_3"></td>
+	          </tr>
+	          <tr>
+	            <td class="label">&nbsp;</td>
+	            <td>&nbsp;</td>
+	          </tr>
+	          <tr>
+	            <td class="label">Top Topic ($)</td>
+	            <td class="value" id="summary_rankedtopics_byfunding_1"></td>
+	          </tr>
+	          <tr>
+	            <td class="label">2nd Topic</td>
+	            <td class="value" id="summary_rankedtopics_byfunding_2"></td>
+	          </tr>
+	          <tr>
+	            <td class="label">3rd Topic</td>
+	            <td class="value" id="summary_rankedtopics_byfunding_3"></td>
+	          </tr>
+	          <tr>
+	            <td class="label">&nbsp;</td>
+	            <td>&nbsp;</td>
+	          </tr>
+
+			  <tr>
+				<td colspan="2">
+					<table id="summary_breakdown" class="topic-selection-summary-table">
+					</table>
+				</td>
+			  </tr>
+	        </table>
+	        </div><!-- /topic-selection-summary-wrap -->
+	        </td>
+	    </tr>
+	  </table>
+	  </div>
+	</form>
+	<div id="navTopics-sm" style="display: none;">
+	  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+	    <tr valign="middle">
+	      <td align="left"><h3>
+	        <label>Filtered By:</label>
+	        </h3></td>
+	      <td>Timing: <span class="values" id="year_selected">[dropdown value]</span></td>
+	      <td colspan="2">Show: <span class="values" id="propstatus_selected">[dropdown value]</span></td>
+	      <!--<td>Topics: <span class="values" id="primarytopic_selected">[dropdown value]</span></td>-->
+	    </tr>
+	    <tr valign="middle">
+	      <td align="left"><h3>
+	        <label>Viewing:</label>
+	        </h3></td>
+	      <td align="left">Topics: <span class="values" id="topics_selected">0</span>/<span class="values" id="topics_total">[count total]</span></td>
+	      <td>Researchers: <span class="values" id="pi_selected">0</span></td>
+	      <td align="right"><input class="buttonGreen-sm button_view_results" type="submit" value="Change Selection" onClick="editTopics();" /></td>
+	    </tr>
+	  </table>
+	</div>
+	<img id="loader" style="display:none" src="img/ajax-loader.gif" />
+</div>
+<div class="clear"></div>
+
+<div id="queryresults" style="display: none;" class="grid_16 alpha omega">
+	<link rel="stylesheet" href="css/style_sass_rl.css">
+	<link rel="stylesheet" href="js/datatables/media/css/demo_page.css">
+	<link rel="stylesheet" href="js/datatables/media/css/demo_table_jui.css">
+	<link rel="stylesheet" href="js/tabletools/media/css/TableTools.css">
+	<link rel="stylesheet" href="js/tabletools/media/css/TableTools_JUI.css">
+
+	<script id="personRender" type="text/x-jquery-tmpl"> 
+			<h3><strong>${name}:</strong></h3>
+			<p>${email}<br />
+			${phone}</p>
+			<p>${inst.dept}<br />
+			${inst.name}</p>
+	</script>
+	<script id="copiRender" type="text/x-jquery-tmpl"> 
+			<p>${name} (${count})</p>
+	</script>
+	<script id="propRender" type="text/x-jquery-tmpl"> 
+			<p>Awards: ${awardcount}<br /><br />
+			Date First: ${mindate}<br />
+			Date Last: ${maxdate}<br /><br />
+			Total Requested Funding: ${requestfunding}<br />
+			Award Funding: ${awardfunding}<br />
+			Award Avg.: ${avgawardfunding}<br />
+			</p>
+	</script>
+
+	<table class="topics-table-wrap">
+	  <tr valign="top">
+	    <td class="topics-table-cell">
+		<h1> Query results: </h1>
+		<h3> Selecting items below will update the Selection Summary sidebar. Use the Copy/Export functions to export your selection. </h3>
+		<div id="tabs">
+			<ul>
+				<li><a href="#tabs-1">Researchers</a></li>
+			</ul>
+			<div id="tabs-1"><div id="pi"></div> </div>
+
+		</div>
+	   </td>
+	   <td><div class="topic-selection-summary-wrap">
+	<!--	 <h3>Filter Results</h3>
+		 <form id="filter_results">
+		 </form>
+		 <br /><br /> -->
+	     <h3 style="font-size: 18px; font-weight: bold; color: #336699; margin-top: 10px; margin-right: 0pt; margin-bottom: 10px; margin-left: 0pt; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px;">Quick Selection Summary</h3>
+	       <p>The below reflects a summary of the items you 
+	         selected on the left.</p>
+
+	       <table id="grant-selection-summary-table" class="topic-selection-summary-table">
+	       <table id="pi-selection-summary-table" class="topic-selection-summary-table">
+	         <tr class="heading">
+	           <td class="label"><strong>Researchers Selected</strong></td>
+	           <td><div class="header-row-wrap"><strong><span id="summary_pis">0</span></strong></div></td>
+	         </tr>
+	         <tr>
+	           <td class="label">&nbsp;</td>
+	           <td>&nbsp;</td>
+	         </tr>
+	         <tr>
+	           <td class="label" colspan="2"><strong>Total Proposals Submitted by Researcher</strong></td>
+	         </tr>
+	         <tr>
+	           <td class="label">1st</td>
+	           <td class="value" id="summary_rankedpis_bypropcount_1"></td>
+	         </tr>
+	         <tr>
+	           <td class="label">2nd</td>
+	           <td class="value" id="summary_rankedpis_bypropcount_2"></td>
+	         </tr>
+	         <tr>
+	           <td class="label">3rd</td>
+	           <td class="value" id="summary_rankedpis_bypropcount_3"></td>
+	         </tr>
+	         <tr>
+	           <td class="label">4th</td>
+	           <td class="value" id="summary_rankedpis_bypropcount_4"></td>
+	         </tr>
+	         <tr>
+	           <td class="label">5th</td>
+	           <td class="value" id="summary_rankedpis_bypropcount_5"></td>
+	         </tr>
+	         <tr>
+	           <td class="label">&nbsp;</td>
+	           <td>&nbsp;</td>
+	         </tr>
+	         <tr>
+	           <td class="label" colspan="2"><strong>Proposals Awarded (qty.) by Researcher</strong></td>
+	         </tr>
+	         <tr>
+	           <td class="label">1st</td>
+	           <td class="value" id="summary_rankedpis_byawardcount_1"></td>
+	         </tr>
+	         <tr>
+	           <td class="label">2nd</td>
+	           <td class="value" id="summary_rankedpis_byawardcount_2"></td>
+	         </tr>
+	         <tr>
+	           <td class="label">3rd</td>
+	           <td class="value" id="summary_rankedpis_byawardcount_3"></td>
+	         </tr>
+	         <tr>
+	           <td class="label">4th</td>
+	           <td class="value" id="summary_rankedpis_byawardcount_4"></td>
+	         </tr>
+	         <tr>
+	           <td class="label">5th</td>
+	           <td class="value" id="summary_rankedpis_byawardcount_5"></td>
+	         </tr>
+	         <tr>
+	           <td class="label">&nbsp;</td>
+	           <td>&nbsp;</td>
+	         </tr>
+	         <tr>
+	           <td class="label" colspan="2"><strong>Proposals Awarded ($) by Researcher</strong></td>
+	         </tr>
+	         <tr>
+	           <td class="label">1st</td>
+	           <td class="value" id="summary_rankedpis_byawardfunding_1"></td>
+	         </tr>
+	         <tr>
+	           <td class="label">2nd</td>
+	           <td class="value" id="summary_rankedpis_byawardfunding_2"></td>
+	         </tr>
+	         <tr>
+	           <td class="label">3rd</td>
+	           <td class="value" id="summary_rankedpis_byawardfunding_3"></td>
+	         </tr>
+	         <tr>
+	           <td class="label">4th</td>
+	           <td class="value" id="summary_rankedpis_byawardfunding_4"></td>
+	         </tr>
+	         <tr>
+	           <td class="label">5th</td>
+	           <td class="value" id="summary_rankedpis_byawardfunding_5"></td>
+	         </tr>
+	         <tr>
+	           <td class="label">&nbsp;</td>
+	           <td>&nbsp;</td>
+	         </tr>
+	         <tr>
+	           <td class="label" colspan="2"><strong>Avg. Award/Grant by Researcher</strong></td>
+	         </tr>
+	         <tr>
+	           <td class="label">1st</td>
+	           <td class="value" id="summary_rankedpis_byavgawardfunding_1"></td>
+	         </tr>
+	         <tr>
+	           <td class="label">2nd</td>
+	           <td class="value" id="summary_rankedpis_byavgawardfunding_2"></td>
+	         </tr>
+	         <tr>
+	           <td class="label">3rd</td>
+	           <td class="value" id="summary_rankedpis_byavgawardfunding_3"></td>
+	         </tr>
+	         <tr>
+	           <td class="label">4th</td>
+	           <td class="value" id="summary_rankedpis_byavgawardfunding_4"></td>
+	         </tr>
+	         <tr>
+	           <td class="label">5th</td>
+	           <td class="value" id="summary_rankedpis_byavgawardfunding_5"></td>
+	         </tr>
+	         <tr>
+	           <td class="label">&nbsp;</td>
+	           <td>&nbsp;</td>
+	         </tr>
+	       </table>
+
+	       </div><!-- /topic-selection-summary-wrap -->
+	     </td>
+	  </tr>
+	</table>
+
+	<script>
+	var selTab = "grant";
+	var query_nsfDiv = "CHE";
+	var query_yearFrom = 2010;
+	var query_yearTo = 2010;
+	var query_topics = "";
+	var query_primtopic = true;
+	var query_status = "";
+
+	//global variable that holds proposal data for selected topics
+	//when user first selects a topic read the data and store it in this array (indexed by topic id)
+	//then use it to add/remove from the summary instead of retrieving it each time
+	var topicsummarydata = {};
+	
+	//global variable that holds selected topics so the summary data can be generated accurately, since some is loaded by json we need the states properly captured
+	var selected_topics = []; //this only gets populated once the topic summary has been downloaded and is available
+
+	function setSelects() {
+	/*	var numSelected = $("#orgs :selected").length;
+		var selValues = "";
+		$.each($("#orgs").val(),function(key,value) {
+			if (selValues!="") selValues += ", ";
+			selValues += value;
+		});
+		$("#orgs_selected").html((selValues==null)?"":(selValues)); */
+		selValues = $("#year_from").val()+' - '+$("#year_to").val();
+		$("#year_selected").html((selValues==null)?"":(selValues)); 
+		selValues = "";
+		$('[id^="prop_status"]:checked').each(function() {
+			if (selValues!="") selValues += ", ";
+			selValues += $(this).next().text();
+		});
+		$("#propstatus_selected").html(selValues); 
+		$("#primarytopic_selected").html($("#primary_topic").attr("checked")?"Primary Topic Only":"All Topics");
+	}		
+	function chgSelects(selector) {
+		//first clear out the msg - this is important because we use to below in the submitMenu function to determine if an error occurred
+		//it's not the cleanest way to do error checking but it's the quickest for now
+		$("#message").html(null);
+
+		if (selector == "topic" || selector == "all") {
+			$("#topic_loader").show();
+
+
+			var selTopics = $("#topics").val(); //PREVIOUSLY SELECTED
+			var status = [];
+			$('input[name=prop_status]:checked').each(function() {
+				status.push($(this).val());
+			});
+			//but we need a string
+			status = status.join(',');
+			var params = "";
+			params += "org=AST,CHE,DMR,DMS,PHY,BIO,MCB,DBI,IOS,DEB,EF,CISE,CCF,CNS,IIS,EHR,DRL,DGE,HRD,DUE,ENG,CBET,CMMI,ECCS,EEC,EFRI,IIP,GEO,AGS,EAR,OCE,SBE,SES,BCS,NCSE,SMA,BFA,BD,DACS,DFM,DGA,DIAS,OIRM,HRM,DIS,DAS";
+			params += "&year=r" + $("select[name=year_from]").val() + "-" + $("select[name=year_to]").val();
+			if (status) params += "&" + "status=" + status;		
+	//console.log(apiurl+'topic?' + params + '&summ&jsoncallback=?');		
+			$.getJSON(apiurl+'topic?' + params + '&summ&jsoncallback=?', function(data) {
+				//populate table
+				loadTopics(data);
+				$("#topic_loader").hide();
+			}); 
+		}
+		if (selector == "org" || selector == "all") {
+			var topicStr = "";
+			if ($("#topics").val() != null) {
+				topicStr = "t" + ($("#primary_topic").attr("checked")?"1":"") + "=" + $("#topics").val() + "&";
+			}
+			var params = topicStr + "year=r" + $("select[name=year_from]").val() + "-" + $("select[name=year_to]").val()
+			$.getJSON(apiurl+'topic?' + params + '&summ&jsoncallback=?', function(data) {
+				//populate table
+				loadTopics(data);			
+			}); 
+		}
+		setSelects();
+	}
+
+	function fullTopics(){
+		$.getJSON(apiurl+'topic?&summ&jsoncallback=?', function(data) {
+			//populate table
+			loadTopics(data);
+		}); 
+		setSelects();
+	}
+
+	function loadTopics(data) {
+	//console.log('loading topics');
+		//reset the summaries
+		$("#topics_selected").html('0');
+		$("#pi_selected").html('0');
+		$("#topics_selected_right").html('0');
+		$("#topics_selected_list").empty();
+		$("#pi_selected_right").html('0');
+		$("#summary_totalfunding").html('0');
+		$("#summary_minyear").html('');
+		$("#summary_maxyear").html('');
+		$("#summary_rankedtopics_bycount_1").html('');
+		$("#summary_rankedtopics_bycount_2").html('');
+		$("#summary_rankedtopics_bycount_3").html('');
+		$("#summary_rankedtopics_byfunding_1").html('');
+		$("#summary_rankedtopics_byfunding_2").html('');
+		$("#summary_rankedtopics_byfunding_3").html('');
+		$("#summary_breakdown").html('');
+
+		//clear data table
+		//$('#topics_table').empty();
+		
+		//group the data by topic so we don't have duplicates
+		//prepare data
+		//group by t1
+		var grouped = _.groupBy(data["data"],function(row) { return row["t1"]; });
+		//now assemble
+		var collated = [];
+		for (var t1 in grouped) {
+	//console.log(grouped[t1]);		
+			//now reduce
+			collated.push(_.reduce(grouped[t1],function(memo,row) {
+				var request_dollar = 0;
+				if (row["request_dollar"]) request_dollar = row["request_dollar"];
+				return {"t1":memo["t1"],"label":row["label"],"words":row["words"],"count":memo["count"]+row["count"],"awarded_dollar":memo["awarded_dollar"]+row["awarded_dollar"],"request_dollar":memo["request_dollar"]+request_dollar};
+			},{"t1":t1,"label":null,"words":null,"count":0,"awarded_dollar":0,"request_dollar":0}));
+		}
+
+		var aaData = _.map(collated, function(v) { 
+			//the random columns generate a number to use to generate an image of a graph from a list of graph images img1-img10
+			//the last column is a dummy number between 
+			var fundMax = 20;
+			var fundMin = 1;
+			var imgMax = 10;
+			var imgMin = 1;
+			return [
+				v["t1"],
+				v["words"],
+				padding_left((Math.floor(Math.random() * (imgMax - imgMin + 1)) + imgMin).toString(), '0', 2),			
+				v["count"],
+				padding_left((Math.floor(Math.random() * (imgMax - imgMin + 1)) + imgMin).toString(), '0', 2),			
+				v["awarded_dollar"],
+				keyExists("request_dollar",v,null),
+				v["label"],
+			]; 
+		});
+
+		$("#topics_total").html(aaData.length);
+
+
+	//console.log(aaData);
+		//before we do anything figure out the max number of proposals
+		//we need this for the "bar graphs"
+		var maxProposalCount = 0;
+		var maxAwardCount = 0;
+		for (var i=0;i<aaData.length;i++) {
+			if (aaData[i][3]>maxProposalCount) maxProposalCount = aaData[i][3];
+			/*if (!aaData[i][6]) {
+				//if no requested dollar amount available use awarded dollar for total funding numbers (public vs. private access)
+				if (aaData[i][5]>maxAwardCount) maxAwardCount = aaData[i][5];
+			} else {
+				if (aaData[i][6]>maxAwardCount) maxAwardCount = aaData[i][6];
+			}*/
+			if (aaData[i][5]>maxAwardCount) maxAwardCount = aaData[i][5];
+		}
+	//console.log(maxAwardCount);	
+	//alert(maxProposalCount);	
+
+		var oTable = $('#topics_table').dataTable({
+			//TableTools - copy, csv, print, pdf
+			"bJQueryUI": true,
+			"sPaginationType": "full_numbers",
+			"bDestroy": true,
+			"bProcessing": true,
+			"bAutoWidth": false,
+			"iDisplayLength": 10,
+			"aaData": aaData,
+			"aoColumnDefs": [
+				{
+					"fnRender": function ( oObj ) {
+						return '<input type="checkbox" name="topic[]" value="'+oObj.aData[0]+'">';
+					},
+					"bSearchable": false,
+					"bSortable": false,
+					"bUseRendered": false,
+					"sTitle": "Select",
+					"aTargets": [ 0 ]
+				},
+				{
+					"fnRender": function ( oObj ) {
+						return '<strong>t'+oObj.aData[0]+': '+oObj.aData[7]+'</strong> - '+oObj.aData[1];
+						//return '<strong>Topic '+oObj.aData[0]+'</strong> : '+oObj.aData[1];
+					},
+					//"bUseRendered": false,
+					"bSortable": false,
+					"sTitle": "Topic",
+					//"sClass": "topic_words", 
+					"aTargets": [ 1 ]
+				},
+				{
+					"fnRender": function ( oObj ) {
+						return '<span class="graph-image-wrap"><img src="img/graph-qty-'+oObj.aData[2]+'.gif" /><span class="number">'+oObj.aData[3]+'</span></span>';
+					},
+					"bSearchable": false,
+					"bSortable": false,
+					"bUseRendered": false,
+					"sTitle": "Proposals Distribution (qty)",
+					"bVisible": false,
+					"aTargets": [ 2 ]
+				},
+				{
+					"fnRender": function ( oObj ) {
+						//calculate the width of the "bar" for this row
+						//it is relative to the maxCount and the size of this column - 150px
+						//var numPixels = 0;
+						//if (maxProposalCount > 0) numPixels = Math.ceil((150/maxProposalCount)*oObj.aData[3]);
+						return '<span class="number">'+oObj.aData[3]+'</span>'; //'<strong class="num-bar-wrap num-bar-proposals"><span class="num-bar" style="width: '+numPixels+'px;"><span class="number">'+oObj.aData[3]+'</span></span></strong>';
+					},
+					"bUseRendered": false,
+					/* "sWidth": "150px",*/
+					"sTitle": "Proposals", 
+					"aTargets": [ 3 ]
+				},
+				{
+					"fnRender": function ( oObj ) {
+						return '<span class="graph-image-wrap"><img src="img/graph-funded-'+oObj.aData[4]+'.gif" /><span class="number">'+oObj.aData[5]+'</span></span>';
+					},
+					"bSearchable": false,
+					"bSortable": false,
+					"bUseRendered": false,
+					"sTitle": "Funding Distribution ($ millions)",
+					"bVisible": false,
+					"aTargets": [ 4 ]
+				},
+				{
+					"fnRender": function ( oObj ) {
+						//calculate the width of the "bar" for this row
+						//it is relative to the maxCount and the size of this column - 150px
+						var formattedAwarded_Dollar = (oObj.aData[5]/1000000).toFixed(2);					
+						var numPixels = 0;
+						if (maxAwardCount > 0) {
+							numPixels = Math.ceil((150/maxAwardCount)*oObj.aData[5]);
+						}
+	//console.log(oObj.aData[5]);					
+						return '<strong class="num-bar-wrap num-bar-amount"><span class="num-bar" style="width: '+numPixels+'px;"><span class="number">$ '+formattedAwarded_Dollar+'M</span></span></strong>';
+					},
+					"bSearchable": false,
+					"bUseRendered": false,
+					"sWidth": "150px",
+					"sTitle": "Funding", 
+					"aTargets": [ 5 ]
+				},
+				{
+					"fnRender": function ( oObj ) {
+						//calculate the width of the "bar" for this row
+						//it is relative to the maxCount and the size of this column - 150px
+						if (oObj.aData[6]) {
+							var numPixels = 0;
+							var formattedAwarded_Dollar = (oObj.aData[6]/1000000).toFixed(2);
+							if (maxAwardCount > 0) {
+								numPixels = Math.ceil((150/maxAwardCount)*oObj.aData[6]);
+							}
+							return '<strong class="num-bar-wrap num-bar-amount"><span class="num-bar" style="width: '+numPixels+'px;"><span class="number">$ '+formattedAwarded_Dollar+'M</span></span></strong>';						
+						}
+					},
+					"bSearchable": false,
+					"bUseRendered": false,
+					"sWidth": "150px",
+					"sTitle": "Request Funding", 
+					"bVisible": false,
+					"aTargets": [ 6 ]
+				},
+				{
+					"bVisible": false,
+					"aTargets": [7]
+				}
+			],
+			"aaSorting": [[3, 'desc']]
+		});
+
+		//append the view toggle states after the filter
+	//console.log($('#topics_table_wrapper #topics_table_filter').html());
+		//$('#topics_table_wrapper #topics_table_filter').before( '<div id="topics_table_views" class="dataTables_filter"><a href="#" id="topics_tables_views_text"><img src="img/btn-query-topic-text_on.gif" /></a><a href="#" id="topics_tables_views_graph"><img src="img/btn-query-topic-graph_off.gif" /></a></div>' );
+		//add a form element to the table header
+		$('<div id="topic_operator_container">Inclusion: <select name="filter_topic_operator"><option value="," selected>Proposals matching ANY selected Topic</option><option value="+">Proposals matching ALL selected Topics</option></select></div>').insertAfter('#topics_table_length');
+
+		/*
+		//trap views links
+		//text
+		$('#topics_table_wrapper #topics_tables_views_text').click(function(event) {
+			oTable.fnSetColumnVis( 2, false );
+			oTable.fnSetColumnVis( 3, true );
+			oTable.fnSetColumnVis( 4, false );
+			oTable.fnSetColumnVis( 5, true );
+			//$(this).parent().addClass('on');
+			//$('#topics_table_wrapper #topics_tables_views_graph').parent().removeClass('on');
+			$(this).html('<img src="img/btn-query-topic-text_on.gif" />');
+			$('#topics_table_wrapper #topics_tables_views_graph').html('<img src="img/btn-query-topic-graph_off.gif" />');
+
+			event.preventDefault();
+		});
+		//graph
+		$('#topics_table_wrapper #topics_tables_views_graph').click(function(event) {
+			oTable.fnSetColumnVis( 2, true );
+			oTable.fnSetColumnVis( 3, false );
+			oTable.fnSetColumnVis( 4, true );
+			oTable.fnSetColumnVis( 5, false );
+			//$(this).parent().addClass('on');
+			//$('#topics_table_wrapper #topics_tables_views_text').parent().removeClass('on');
+			$(this).html('<img src="img/btn-query-topic-graph_on.gif" />');
+			$('#topics_table_wrapper #topics_tables_views_text').html('<img src="img/btn-query-topic-text_off.gif" />');
+
+			event.preventDefault();
+		}); */
+
+		/*$('#topics_table span[title]').qtip({
+		      content: {
+		         text: false // Use each elements title attribute
+		      },
+		});*/
+
+		$("#navTopics").slideDown();
+	}
+
+	function validateMsg(text) {
+		$("#message").html(text)
+		$("#message").show();
+		//setTimeout('$("#message").slideUp()', 2500);
+	}
+
+	function getTopics() {
+		$("#message").html("");
+		selected_topics = [];
+
+		var tab = selTab;
+
+		var input = $("#queryform").serializeObject();
+		var year_from = input.year_from;
+		var year_to = input.year_to;
+
+		if(year_from > year_to) {
+			validateMsg("Please enter a valid date range!");
+			return;
+		}
+
+		//check status
+		if (!input.prop_status) {
+			validateMsg("Please specify a status!");
+			return;		
+		};
+
+		chgSelects('topic');
+	}
+
+	function editTopics() {
+		//hide results
+		$("#queryresults").slideUp();
+		$("#navTopics-sm").slideUp(); //this is the guy that shows a summary of the query params
+		//show form
+		$("#navTopics").slideDown();
+	}
+
+	function submitMenu(tab) {
+	//	tab = selTab;
+
+		var input = $("#queryform").serializeObject();
+
+		//some quick checks
+		if(input.year_from > input.year_to) {
+			validateMsg("Please enter a valid date range!");
+			return;
+		}
+		//check status
+		if (!input.prop_status) {
+			validateMsg("Please specify a status!");
+			return;		
+		};
+
+	//console.log(input);	
+		query_nsfDiv = input.org;
+		query_yearFrom = input.year_from;
+		query_yearTo = input.year_to;
+		var tmp = input["topic[]"];
+		/*query_topics = "";
+		if( Object.prototype.toString.call( tmp ) === '[object Array]' ) {
+			//cheaper than a jquery map for this simple thing
+			for(var i = 0, l = tmp.length; i < l; i++) {
+				if (query_topics) query_topics += ",";
+			    query_topics += tmp[i];
+			}		
+		} else {
+			query_topics = tmp;
+		}*/
+		query_primtopic = input.primary_topic;
+		//use status
+		var tmp = input.prop_status;
+		query_status = "";
+		if( Object.prototype.toString.call( tmp ) === '[object Array]' ) {
+			//cheaper than a jquery map for this simple thing
+			for(var i = 0, l = tmp.length; i < l; i++) {
+				if (query_status) query_status += ",";
+			    query_status += tmp[i];
+			}		
+		} else {
+			query_status = tmp;
+		}
+
+		$("#summary_pis").html('0');
+		$("#summary_rankedpis_bypropcount_1").html('0');
+		$("#summary_rankedpis_bypropcount_2").html('');
+		$("#summary_rankedpis_bypropcount_3").html('');
+		$("#summary_rankedpis_bypropcount_4").html('');
+		$("#summary_rankedpis_bypropcount_5").html('');
+		$("#summary_rankedpis_byawardcount_1").html('');
+		$("#summary_rankedpis_byawardcount_2").html('');
+		$("#summary_rankedpis_byawardcount_3").html('');
+		$("#summary_rankedpis_byawardcount_4").html('');
+		$("#summary_rankedpis_byawardcount_5").html('');
+		$("#summary_rankedpis_byawardfunding_1").html('');
+		$("#summary_rankedpis_byawardfunding_2").html('');
+		$("#summary_rankedpis_byawardfunding_3").html('');
+		$("#summary_rankedpis_byawardfunding_4").html('');
+		$("#summary_rankedpis_byawardfunding_5").html('');
+		$("#summary_rankedpis_byavgawardfunding_1").html('');
+		$("#summary_rankedpis_byavgawardfunding_2").html('');
+		$("#summary_rankedpis_byavgawardfunding_3").html('');
+		$("#summary_rankedpis_byavgawardfunding_4").html('');
+		$("#summary_rankedpis_byavgawardfunding_5").html('');
+
+	//	if ($smarty.get.alert=="amy") {
+	//		alert(JSON.stringify(input));
+	//	}
+		renderIt(query_nsfDiv, query_yearFrom, query_yearTo, query_status, selected_topics, query_primtopic, tab); //use selected topics instead of query_topics
+		//renderIt(query_nsfDiv, query_yearFrom, query_yearTo, query_topics, query_primtopic, "grant");
+		//renderIt(query_nsfDiv, query_yearFrom, query_yearTo, query_topics, query_primtopic, "pi");
+		//renderIt(query_nsfDiv, query_yearFrom, query_yearTo, query_topics, query_primtopic, "org");
+
+		//activate tab
+		//this will take care of rendering
+		//if (tab=='pi') {
+	//console.log('selecting tab:'+tab);
+		//	$('#tabs').tabs('select','tabs-1');			
+		//}
+
+		//now show the selected topics in the filter form
+		var tmp = query_topics.split(',');
+		$("form[id=filter_results]").html('');
+		for (var i in tmp) {
+			$("form[id=filter_results]").append('<strong><input type="checkbox" value="'+tmp[i]+'" name="topic[]" checked>Topic: '+tmp[i]+'</strong>');
+		}
+		$("form[id=filter_results]").append('<input class="buttonGreen-sm" type="button" name="filter_button" value="Filter">');	
+
+		//now either show the results or in case an error occurred, don't show them
+		//we check error by seeing if there is anything in the message div - not the best way but quick for now
+		//chgSelects above resets the div before a call
+	//console.log($("#message").html());	
+		if (!$("#message").html()) {
+			//hide query
+			$("#navTopics").slideUp();
+			$("#queryresults").slideDown();
+			$("#navTopics-sm").slideDown(); //this is the guy that shows a summary of the query params
+		}
+	}
+
+	function renderIt(org, year_from, year_to, status, topic, prim, tab) {
+		var year = "";
+		if(year_from > year_to) {
+			validateMsg("Please enter a valid date range!");
+			return;
+		}
+		else if (year_from == year_to){
+			year = year_from;
+		}
+
+		else{
+			year = year_from + "-" + year_to;
+		}
+
+		$("#loader").show();
+		var query = "";
+		if(org != undefined){
+			query = query + "org=" + org + "&";
+		}
+		if(year != ""){
+			query = query + "year=r" + year + "&";
+		}
+		if(topic != undefined){
+			if(prim){
+				query = query + "t1=" + topic + "&";
+			}
+			else{
+				query = query + "t=" + topic + "&";
+			}
+		}
+		if (status != undefined){
+			query = query + "status=" + status + "&";
+		}
+	//console.log(query);
+
+		if(query == ""){
+			$("#loader").hide();
+			validateMsg("Please enter a search query!");
+			return;
+		}
+		else
+		{
+
+			renderJSON(org, year_from, year_to, status, topic, prim, tab);
+	/*		$.getJSON(apiurl+'topic?' + query + '&jsoncallback=?', function(data) {
+				if (data["Error"] != undefined){
+					validateMsg(data["Error"]);
+					$("#loader").hide();
+				}
+				else{
+					renderJSON(data);
+					$("#loader").hide();
+				}
+			});*/
+		}
+	}
+
+	var mTable; //this is the people table
+
+	function renderJSON(org, year_from, year_to, status, topic, prim, tab) 
+	{
+		if (tab == null)
+			tab = "pi";
+			
+		var year = "";
+		if (year_from == year_to){
+			year = year_from;
+		}
+		else{
+			year = year_from + "-" + year_to;
+		}
+		var query = "";
+		if(org != undefined){
+			query = query + "org=" + org + "&";
+		}
+		if(year != ""){
+			query = query + "year=r" + year + "&";
+		}
+		if(topic != undefined){
+			if (selected_topics.length>1 && $('select[name=filter_topic_operator] option:selected').val()=='+') {
+				query = query + "t=" + topic + "&";
+			}
+			else if(prim){
+				query = query + "t1=" + topic + "&";
+			}
+			else{
+				query = query + "t=" + topic + "&";
+			}
+		}
+		if (status != undefined){
+			query = query + "status=" + status + "&";
+		}			
+		query = query.substr(0, query.length-1);
+
+		$.getJSON(apiurl+'topic?' + query + '&page=' + tab + '&jsoncallback=?', function(data) {
+			//if user selected more than one topic and specified OR
+//console.log(selected_topics.length);		
+//console.log($('select[name=filter_topic_operator] option:selected').val());	
+			if (selected_topics.length>1 && $('select[name=filter_topic_operator] option:selected').val()=='+') {
+				//prepare to extract the pis that have worked on awards in all the specified topics
+				//do this by getting a list of proposals that appear in any of those buckets
+				$.getJSON(apiurl+'topic?' + query + '&jsoncallback=?', function(propdata) {
+					//create buckets for the selected topics
+					var collated = {};
+					_.each(selected_topics, function(topicid) {
+						collated[topicid]=[];
+					});
+console.log(collated);					
+					_.each(propdata["data"], function(row) {
+//console.log(row);					
+						//check all topics
+						var i = 0;
+//console.log(row["topic"]["id"][i]);						
+						if (row["topic"]["id"][i] != null && $.inArray(row["topic"]["id"][i],selected_topics)!=-1) {
+							var tmp = collated[row["topic"]["id"][i]];
+							if ($.inArray(row["proposal"]["nsf_id"],tmp)==-1) { 
+								tmp.push(row["proposal"]["nsf_id"]);
+								collated[row["topic"]["id"][i]] = tmp;
+							}
+						}
+						i = 1;
+//console.log(row["topic"]["id"][i]);						
+//console.log(selected_topics);
+						if (row["topic"]["id"][i] != null && $.inArray(row["topic"]["id"][i],selected_topics)!=-1) {
+							var tmp = collated[row["topic"]["id"][i]];
+							if ($.inArray(row["proposal"]["nsf_id"],tmp)==-1) { 
+								tmp.push(row["proposal"]["nsf_id"]);
+								collated[row["topic"]["id"][i]] = tmp;
+							}
+						}
+						i = 2;
+						if (row["topic"]["id"][i] != null && $.inArray(row["topic"]["id"][i],selected_topics)!=-1) {
+							var tmp = collated[row["topic"]["id"][i]];
+							if ($.inArray(row["proposal"]["nsf_id"],tmp)==-1) { 
+								tmp.push(row["proposal"]["nsf_id"]);
+								collated[row["topic"]["id"][i]] = tmp;
+							}
+						}
+						i = 3;
+						if (row["topic"]["id"][i] != null && $.inArray(row["topic"]["id"][i],selected_topics)!=-1) {
+							var tmp = collated[row["topic"]["id"][i]];
+							if ($.inArray(row["proposal"]["nsf_id"],tmp)==-1) { 
+								tmp.push(row["proposal"]["nsf_id"]);
+								collated[row["topic"]["id"][i]] = tmp;
+							}
+						}
+					});
+console.log(collated);	
+					//now get all the propids into an array
+					var extracted = [];
+					for (var key in collated) {
+						extracted.push(collated[key]);
+					}	
+console.log(extracted);										
+					//sort them into buckets by topic id i.e. group by primary topic
+/*					
+					var grouped = _.groupBy(propdata["data"], function(item){ return item["topic"]["id"][0]; });
+console.log(grouped);
+					//now we have our buckets, lets reduce it
+					var collated = [];
+					for (var key in grouped) {
+						collated.push(_.reduce(grouped[key], function(memo, row) {
+							var propids = memo["propids"];
+							propids.push(row["proposal"]["nsf_id"]);
+							return {"t1":key,"propids":propids};
+						}, {"t1":key,"propids":[]}));
+					} */
+//console.log(collated);
+					//now get the intersection of the propids across all the buckets, these are proposals that have all the topics assigned to them
+					var propids = _.intersection(extracted[0],extracted[1]);
+console.log(propids);					
+					if (propids.length>0) {
+						//continue with the rest
+						for (var i=2;i<extracted.length;i++) {
+							propids = _.intersection(propids,extracted[i]);
+							if (propids.length==0) break;
+						}						
+					}
+console.log(propids);										
+//console.log(data["data"]);
+					//now go through the list of pis and the list of proposals the pi has worked on
+					var pis = [];
+					//if there are no common proposals, ignore
+					if (propids.length>0) {						
+						_.each(data["data"], function(row) {
+							//if the number is less than the number of buckets obviously, they do not qualify
+							/*if (row["prop"].length >= collated.length) {
+								//if the number is the same or greater, at least one proposal by a pi must fall into each of the buckets
+								var qualified = true;
+								_.each(collated, function(item) {
+									//if this condition is satisfied, they qualify
+//console.log(item["t1"]);								
+//console.log(item["propids"]);								
+//console.log(row["prop"]);								
+//console.log(_.intersection(item["propids"], row["prop"]));
+									if (_.intersection(item["propids"], row["prop"]).length==0) {
+										qualified = false;
+										return;
+									}
+								});
+								//now check the flag
+								if (qualified) pis.push(row);
+							}*/
+							//if a pi has a prop that falls into the common award list, they qualify
+							if (_.intersection(propids, row["prop"]).length!=0) {
+								pis.push(row);
+							}
+						});
+					}
+console.log(pis);
+					createTable(tab, pis);
+				});
+			} else {		
+				createTable(tab, data["data"]);		
+			}
+		});
+	}
+
+	function createTable(tab, data)
+	{
+		if (data["Error"] != undefined){
+			validateMsg(data["Error"]);
+			$("#loader").hide();
+		}
+		else {
+			if (tab == "pi") {										
+				/* Render PI DataTable - add in more detail for each PI*/
+				$("#pi").html("<table class='display' cellpadding='0' cellspacing='0' border='0' id='dtable_pi'></table>");
+
+				//data["data"] = $.grep(data["data"], function(v) { return (v.inst != null); }); //removes the double not available
+				aaData = _.map(data, function(v) { 
+					return [
+						'<img src="img/details_open.png">',
+						v["nsf_id"], 
+						keyExists("name", v, "Not Available"), 
+						keyExists("inst.name", v, "Not Available"),
+						keyExists("inst.dept", v, "Not Available"),
+						v["count"],
+						v["prop"].join(", "),
+					]; 
+				});
+
+				mTable = $('#pi table').dataTable({
+					//TableTools - copy, csv, print, pdf
+					"bJQueryUI": true,
+					"sPaginationType": "full_numbers",					
+					//"sDom": 'T<"clear">lfrtip',
+					"sDom": 'T<"clear"><"H"lfr>t<"F"ip>',
+					//"bDestroy": true,
+					"bProcessing": true,
+
+					"iDisplayLength": 50,
+					"aoColumnDefs": [
+						{ "bSortable": false, "aTargets": [ 0 ] },
+						{ "sWidth": "5%", "sTitle": "PI ID", "aTargets": [ 1 ] },
+						{ "sWidth": "20%", "sTitle": "Name", "aTargets": [ 2 ] }, 
+						{ "sWidth": "30%", "sTitle": "Institution", "aTargets": [ 3 ] }, 
+						{ "sWidth": "30%", "sTitle": "Department", "aTargets": [ 4 ] },  
+						{ "sWidth": "5%", "sTitle": "Proposals", "aTargets": [ 5 ] },  
+						{ 
+							"fnRender": function ( oObj ) {
+								//wrap each prop id in a link
+								var formatted = [];
+								if (oObj.aData[6]) {
+									var tmp = oObj.aData[6].split(',');
+									for (var i in tmp)	formatted.push('<a href="https://www.ejacket.nsf.gov/ej/showProposal.do?optimize=Y&ID='+tmp[i]+'&docid='+tmp[i]+'" title="Open in e-Jacket" target="_blank">'+tmp[i]+'</a>');
+								}
+								if (oObj.aData[6] && oObj.aData[6].split(',').length>3) {
+	//console.log(oObj.aData[6].split(',').slice(0,3	));								
+									//only show first 3, put rest in more
+									var html = formatted.slice(0,3).join(',')+' <a class="moregrantids" href="#">More</a>';
+									html += '<div id="grants_more_'+oObj.aData[1]+'" style="display: none;">'+formatted.slice(3).join(',')+'</div>';
+									return html;
+								}
+								else return formatted.join(',');
+							},
+							"bUseRendered": false,
+							"sWidth": "20%", 
+							"sTitle": "Grants IDs", 
+							"aTargets": [ 6 ] 
+						}
+					],
+					"aaData": aaData,
+					"aaSorting": [[5, 'desc']],
+					"oLanguage": {
+						"sLengthMenu:": "Display _MENU_ records per page",
+						"sSearch": "Keyword Filter:"
+					}
+					//"sDom": 'T<"clear">lfrtip',
+				});
+			}  
+		}
+		$("#loader").hide();
+	}
+
+	//global variable that holds selected proposal data
+	//when user first selects a proposal, researcher or org read the data and store it in this array (indexed by proposal id)
+	//then use it to add/remove from the summary instead of retrieving it each time
+	var propsummarydata = {};
+
+	$(document).ready(function() {
+		// Check to see if we have access to nsfstarmetrics server 
+		$.ajax({
+			url: "http://128.150.10.70/py/api.py/access",
+			dataType: 'JSONP',
+			timeout: 2000,
+			success: function(data) {
+				console.log(data);
+				proposalaccessallowed = true;
+				apiurl = "http://128.150.10.70/py/api.py/";
+				$('#prop_status_container').append('<input type="checkbox" checked id = "prop_status_decline" name = "prop_status" value = "decline"> <label for="prop_status_decline">Declined</label>');
+				$('#prop_status_container').append('<input type="checkbox" checked id = "prop_status_propose" name = "prop_status" value = "propose"> <label for="prop_status_propose">Other</label>');
+				getTopics();
+	console.log(apiurl);
+			},
+			error: function(data) {
+				//load all topics to start
+				getTopics();
+				console.log(data);
+			}
+		});
+
+
+
+		// TableTools defaults
+		TableTools.DEFAULTS.aButtons = [
+							{
+								"sExtends": "copy",
+								"sButtonText": "Copy to Clipboard",
+								"bSelectedOnly": true
+							},
+							/*{
+								"sExtends": "print",
+								"bShowAll": false,
+							},*/
+							{
+								"sExtends": "collection",
+								"sButtonText": "Export", 
+								"aButtons": [
+									{
+										"sExtends": "csv", 
+										"bSelectedOnly": true
+									},
+									{
+										"sExtends": "pdf",
+										"bSelectedOnly": true
+									}	
+								]
+							},
+							{
+								"sExtends": "select_all",
+								"fnClick": function ( nButton, oConfig, oFlash ) {
+	//console.log(selTabIndex);
+									var oTable = $('#pi table').dataTable();
+									var notselectedRows = fnGetNotSelectedRows(oTable);
+									$.each(notselectedRows, function(i, item){
+										$(notselectedRows[i]).addClass('row_selected');
+										$(notselectedRows[i]).addClass('DTTT_selected');
+										//update summary
+										updatePISummary(oTable.fnGetData(notselectedRows[i]),true);
+									});
+								}							
+							},
+							{
+								"sExtends": "select_none",
+								"fnClick": function ( nButton, oConfig, oFlash ) {
+									var oTable = $('#pi table').dataTable();
+									var notselectedRows = fnGetSelectedRows(oTable);
+									$.each(notselectedRows, function(i, item){
+										$(notselectedRows[i]).removeClass('row_selected');
+										$(notselectedRows[i]).removeClass('DTTT_selected');
+										//update summary
+										updatePISummary(oTable.fnGetData(notselectedRows[i]),false);
+									});
+								}							
+							}
+						];
+		//TableTools.DEFAULTS.sSwfPath = "js/tabletools/media/swf/copy_cvs_xls_pdf.swf";
+		TableTools.DEFAULTS.sSwfPath = "../js/tabletools/media/swf/copy_cvs_xls_pdf.swf";
+		TableTools.DEFAULTS.sRowSelect = "multi";
+
+		 //NK - comment below out if you do not want to initialize the page showing the topics for some preselected items
+		//$("#orgs").change(_.throttle(function() { chgSelects("topic"); }, 400));
+		//$("#topics").change(_.throttle(function() { chgSelects("org"); }, 400));
+		//$("#primary_topic").change(_.throttle(function() { chgSelects("org"); }, 400));
+		//$("#leftOption3 select").change(_.throttle(function() { chgSelects("all"); }, 400)); // Make sure you don't overload Javascript!
+		//chgSelects("topic");
+
+		//submitMenu();
+
+		// Tabs
+
+		$('#tabs').tabs({
+			select: function(event, ui) {
+				selTab = ["pi"][ui.index]; //"divs",  put that back before "topics_tab" to reactivate the divs
+	//console.log(selTab);			
+	//console.log(ui);			
+	//console.log(query_nsfDiv);			
+	//console.log(query_topics);
+				//reset summaries
+				if (selTab=="pi") {
+					$("#summary_pis").html('0');
+					$("#summary_rankedpis_bypropcount_1").html('0');
+					$("#summary_rankedpis_bypropcount_2").html('');
+					$("#summary_rankedpis_bypropcount_3").html('');
+					$("#summary_rankedpis_bypropcount_4").html('');
+					$("#summary_rankedpis_bypropcount_5").html('');
+					$("#summary_rankedpis_byawardcount_1").html('');
+					$("#summary_rankedpis_byawardcount_2").html('');
+					$("#summary_rankedpis_byawardcount_3").html('');
+					$("#summary_rankedpis_byawardcount_4").html('');
+					$("#summary_rankedpis_byawardcount_5").html('');
+					$("#summary_rankedpis_byawardfunding_1").html('');
+					$("#summary_rankedpis_byawardfunding_2").html('');
+					$("#summary_rankedpis_byawardfunding_3").html('');
+					$("#summary_rankedpis_byawardfunding_4").html('');
+					$("#summary_rankedpis_byawardfunding_5").html('');
+					$("#summary_rankedpis_byavgawardfunding_1").html('');
+					$("#summary_rankedpis_byavgawardfunding_2").html('');
+					$("#summary_rankedpis_byavgawardfunding_3").html('');
+					$("#summary_rankedpis_byavgawardfunding_4").html('');
+					$("#summary_rankedpis_byavgawardfunding_5").html('');
+				}
+				renderIt(query_nsfDiv, query_yearFrom, query_yearTo, query_status, query_topics, query_primtopic, selTab);
+			}
+		});
+
+		//$('#tabs').tabs();
+
+		//QTip to show information in form options	
+		$('option').each(function(){
+			$(this).qtip({
+				content: $(this).html(),
+				show: 'mouseover',
+				hide: 'mouseout',
+				position: {
+					target: 'mouse',
+			  		corner: {
+						target: 'topLeft',
+				 		tooltip: 'bottomLeft'
+			   		}
+				}
+			});
+		});
+
+		//filtering the results
+		//$('#filter_results input[name="topic[]"]').live('click',function(event) {
+		$('#filter_results input[name="filter_button"]').live('click',function(event) {
+			//using only what is selected reload the data
+			var filteredtopics = [];
+			$('#filter_results input[name="topic[]"]:checked').each(function() {
+				filteredtopics.push($(this).val());
+			});
+			if (filteredtopics.length==0) alert('Please select at least one topic');
+			else {
+				//but we need a string
+				filteredtopics = filteredtopics.join(',');					
+				//reload the data with the selected topics
+				renderIt(query_nsfDiv, query_yearFrom, query_yearTo, query_status, filteredtopics, query_primtopic, "pi");
+			}
+		});
+
+		$('#pi table tbody tr').live('click', function (event) {  
+	//console.log('clicked');		 
+			var oTable = $('#pi table').dataTable();
+		    var aData = oTable.fnGetData(this); // get datarow
+	//console.log(fnGetSelected(oTable));
+
+			//load prop data for selected pis so we can calculate summaries and rankings
+			var propids = [];
+			var tmp_propids = aData[6];
+			//make array out of string
+			if (tmp_propids) propids = tmp_propids.split(',');
+			//now load the data for each propid if it is not already loaded
+			var params = '';
+	//console.log(propsummarydata);		
+			for (var i in propids) {
+				var propid = jQuery.trim(propids[i]);
+				//if not previously loaded and cached, load it
+				if (!propsummarydata[propid]) {
+					if (params) params += ',';
+					params += propid;
+				}
+			}
+	//console.log(params);
+
+	//console.log(event.target.nodeName);		
+
+			//if the show details link was clicked trap that		
+		   if(event.target.nodeName == "IMG"){
+	//console.log($(event.target));		
+				var pi_node = this;
+				if (pi_node != null) {
+					var pData = oTable.fnGetData(pi_node);
+					if ( $(event.target).attr("src").match('details_close') )
+					{
+						$(event.target).attr("src", "img/details_open.png");
+						$("#pid_" + pData[1]).slideUp(function() {
+							oTable.fnClose(pi_node);
+						});
+					}
+					else
+					{
+						$(event.target).attr("src", "img/details_close.png");
+						oTable.fnOpen(pi_node, "<div class='dataInnerts' id='pid_" + pData[1] + "'><table><tr><td id='userDetails_"+pData[1]+"'></td><td id='propDetails_"+pData[1]+"'><h3>Proposals (<span></span>)</h3></td><td id='copiDetails_"+pData[1]+"'><h3>Co-PIs (<span></span>)</h3></td></tr></table></div>", 'details' );
+						$("#pid_" + pData[1]).hide();
+						//load pi data
+						$.getJSON(apiurl+'user?id=' + pData[1] + '&jsoncallback=?', function(data) {
+							$($("#personRender").tmpl(data["data"])).appendTo("#userDetails_" + pData[1]);
+						});
+						//co-collaborators					
+						$.getJSON(apiurl+'user?id=' + pData[1] + '&page=pi&jsoncallback=?', function(data) {
+							$("#copiDetails_"+pData[1]+" h3 span").html(data["count"]);
+							// Use $.each() to get all grant details for each PI
+							$.each(data["data"], function(i, item){
+								$($("#copiRender").tmpl(item)).appendTo("#copiDetails_" + pData[1]);
+							});
+						});
+						if (params) {
+			//console.log('getting data:'+params);
+							$.getJSON(apiurl + 'prop?id=' + params + '&jsoncallback=?', function(data) {
+			//console.log(data);
+								//for each prop store the data in the cache
+								if (data["data"]) {
+									for (var i in data["data"]) {							
+			//console.log(data["data"][i]["nsf_id"]);							
+										propsummarydata[data["data"][i]["nsf_id"]] = data["data"][i];
+									}
+								}
+								var propdetails = calcPIPropDetails(aData);
+								$("#propDetails_"+pData[1]+" h3 span").html(propdetails["propcount"]);
+								$($("#propRender").tmpl(propdetails)).appendTo("#propDetails_" + pData[1]);
+							});
+						} else {
+							var propdetails = calcPIPropDetails(aData);
+							$("#propDetails_"+pData[1]+" h3 span").html(propdetails["propcount"]);
+							$($("#propRender").tmpl(propdetails)).appendTo("#propDetails_" + pData[1]);						
+						}
+						$("#pid_" + pData[1]).slideDown();
+					}
+				}
+
+				event.preventDefault();
+			    return;
+			}
+
+			//if the more link was clicked trap that		
+		   if(event.target.nodeName == "A") {
+	//console.log($(event.target));		
+				if ($(event.target).hasClass('moregrantids')) {
+					var pi_node = this;
+					if (pi_node != null) {
+						var pData = oTable.fnGetData(pi_node);
+						$("#grants_more_"+pData[1]).toggle();
+					}				
+					event.preventDefault();
+				    return;
+				} else {
+					return;
+				}
+			}
+
+		    if (null != aData)  // null if we clicked on title row
+		    {
+				//set the class
+				if ( $(this).hasClass('row_selected') ) {
+					$(this).removeClass('row_selected');
+				} else {
+					$(this).addClass('row_selected');
+				}	
+				updatePISummary(aData,$(this).hasClass('row_selected'));		
+		    }
+		});
+
+		/* Detail for PI Details */
+	/*	
+		$('#pi #dtable_pi tbody td img').live('click', function () {
+			var pi_node = $(this).parent().parent().get(0);
+			if (pi_node != null) {
+				var pData = mTable.fnGetData(pi_node);
+				if ( this.src.match('details_close') )
+				{
+					this.src = "img/details_open.png";
+					$("#pid_" + pData[1]).slideUp(function() {
+						mTable.fnClose(pi_node);
+					});
+				}
+				else
+				{
+					this.src = "img/details_close.png";
+					mTable.fnOpen(pi_node, "<div class='dataInnerts' id='pid_" + pData[1] + "'></div>", 'details' );
+					$.getJSON((apiurl+'prop?id=' + pData[6]).split(' ').join('') + '&jsoncallback=?', function(data) {
+						$("#pid_" + pData[1]).hide()
+						// Use $.each() to get all grant details for each PI
+						$.each(data["data"], function(i, item){
+							$($("#personRender").tmpl(item)).appendTo("#pid_" + pData[1]);
+						});
+						$("#pid_" + pData[1]).slideDown()
+					});
+				}
+			}
+		}); */
+
+		$('#topics_table input[name="topic[]"]').live('click',function(event) {
+		//$('#topics_table input[name="topic[]"]').live('click',function(event) {
+	//console.log(event.target.tagName);
+	//console.log('checked:'+$(this).attr('value'));
+			var oTable = $('#topics_table').dataTable();		
+			/* Get the position of the current data from the node */
+			var aPos = oTable.fnGetPosition( $(this).parent().parent().get(0) );
+			/* Get the data array for this row */
+			var aData = oTable.fnGetData( aPos );
+
+			var topicid = $(this).attr('value');
+			var checked = $(this).attr('checked');
+
+			//trap topic selection
+			var numTopicsSelected = $("#topics_selected").html();
+	//console.log(numTopicsSelected);		
+			if (checked) {
+				//set the row on
+				$(this).parent().parent().addClass('selected');
+	//alert($(this).parent().parent());
+				numTopicsSelected++; 
+				//update list of selected topics (id and description)
+				var tmp = aData[1].split(' - ');
+				$("#topics_selected_list").append('<li id="selected_topic_'+topicid+'">'+tmp[0]+'</li>');
+			} else {
+				//set the row off
+				$(this).parent().parent().removeClass('selected');
+				numTopicsSelected--;
+				//update list of selected topics (id and description)
+				$('li[id="selected_topic_'+topicid+'"]').remove();
+			}
+			$("#topics_selected").html(numTopicsSelected);
+
+	//console.log(topicsummarydata);	
+			var topicid = $(this).attr('value');
+			var checked = $(this).attr('checked');
+
+			//we need status to filter by - get it here
+			var propstatus = [];
+			$('input[name=prop_status]:checked').each(function() {
+				propstatus.push($(this).val());
+			});
+			//but we need a string
+			propstatus = propstatus.join(',');			
+
+			//now pull proposal information for selected topic
+			if (topicsummarydata[topicid]!== undefined) {
+//console.log('retrieving from cache');
+				//if checked, add to selected_topics list
+				if (checked) {
+					selected_topics.push(topicid);
+				} else {
+					//else remove
+					selected_topics = _.without(selected_topics, topicid);
+				}
+				updateTopicSummary($(this).attr('checked'),topicsummarydata[topicid]);
+			} else {
+				//first get the data
+				var params = "org=org=AST,CHE,DMR,DMS,PHY,BIO,MCB,DBI,IOS,DEB,EF,CISE,CCF,CNS,IIS,EHR,DRL,DGE,HRD,DUE,ENG,CBET,CMMI,ECCS,EEC,EFRI,IIP,GEO,AGS,EAR,OCE,SBE,SES,BCS,NCSE,SMA,BFA,BD,DACS,DFM,DGA,DIAS,OIRM,HRM,DIS,DAS" + "&" + "year=r" + $("select[name=year_from]").val() + "-" + $("select[name=year_to]").val() + "&" + "t1=" + topicid+"&status="+propstatus+"&summ=full";
+				$.getJSON(apiurl + 'topic?' + params + '&jsoncallback=?', function(data) {
+					//what we get back is a list of topics per year, per org, per status
+					//create the compiled data once for quick access
+					var count = 0;
+					var totalfunding = 0;
+					var max_year = null;
+					var min_year = null;
+					var status = {};
+					var org_count = {};
+					var year_count = {};
+					var org_funding = {};
+					var year_funding = {};
+					for (var i=0;i<data["data"].length;i++) {
+						//count
+						count += parseInt(data["data"][i]["count"]);
+						//total funding
+						totalfunding += parseInt(data["data"][i]["awarded_dollar"]);
+						var tmp = data["data"][i]["year"];
+						//max year
+						if (!max_year) max_year = tmp;
+						else if (tmp > max_year) {
+							max_year = tmp;
+						}
+						//min year
+						if (!min_year) min_year = tmp;
+						else if (tmp < min_year) {
+							min_year = tmp;
+						}
+						//gather counts by status
+						if (status[data["data"][i]["status"]]) status[data["data"][i]["status"]] += parseInt(data["data"][i]["count"]);
+						else status[data["data"][i]["status"]] = parseInt(data["data"][i]["count"]);
+						//gather counts by year
+						if (year_count[data["data"][i]["year"]]) year_count[data["data"][i]["year"]] += parseInt(data["data"][i]["count"]);
+						else year_count[data["data"][i]["year"]] = parseInt(data["data"][i]["count"]);					
+						//gather counts by org
+						if (org_count[data["data"][i]["org"]]) org_count[data["data"][i]["org"]] += parseInt(data["data"][i]["count"]);
+						else org_count[data["data"][i]["org"]] = parseInt(data["data"][i]["count"]);					
+						//gather funding by year
+						if (year_funding[data["data"][i]["year"]]) year_funding[data["data"][i]["year"]] += parseInt(data["data"][i]["awarded_dollar"]);
+						else year_funding[data["data"][i]["year"]] = parseInt(data["data"][i]["awarded_dollar"]);					
+						//gather funding by org
+						if (org_funding[data["data"][i]["org"]]) org_funding[data["data"][i]["org"]] += parseInt(data["data"][i]["awarded_dollar"]);
+						else org_funding[data["data"][i]["org"]] = parseInt(data["data"][i]["awarded_dollar"]);					
+					}
+	//console.log(org_funding);								
+					var compileddata = {};
+					//save it
+					compileddata['summary_count'] = count;
+					compileddata['summary_totalfunding'] = totalfunding;
+					compileddata['summary_maxyear'] = max_year;
+					compileddata['summary_minyear'] = min_year;
+					compileddata['summary_status'] = status;
+					compileddata['summary_year_count'] = year_count;
+					compileddata['summary_org_count'] = org_count;
+					compileddata['summary_year_funding'] = year_funding;
+					compileddata['summary_org_funding'] = org_funding;
+					//save it
+					topicsummarydata[topicid] = compileddata;
+					//if checked, add to selected_topics list
+					if (checked) {
+						selected_topics.push(topicid);
+					} else {
+						//else remove
+						selected_topics = _.without(selected_topics, topicid);
+					}
+					//populate table
+					updateTopicSummary(checked,compileddata);				
+				}); 
+			}
+
+			//do it on the right side too
+			$("#topics_selected_right").html(numTopicsSelected);
+
+			//we need status to filter by - get it here
+			var propstatus = [];
+			$('input[name=prop_status]:checked').each(function() {
+				propstatus.push($(this).val());
+			});
+			//but we need a string
+			propstatus = propstatus.join(',');					
+			//get count of researchers - we're not caching these for now
+			var params = "year=r" + $("select[name=year_from]").val() + "-" + $("select[name=year_to]").val() + "&" + "t1=" + topicid+"&status="+propstatus+"&page=pi";
+			$.getJSON(apiurl + 'topic?' + params + '&jsoncallback=?', function(data) {
+				var curr_pi_count = parseInt($("#pi_selected_right").html());
+				if (checked) curr_pi_count += parseInt(data["count"]);
+				else curr_pi_count -= parseInt(data["count"]);
+				$("#pi_selected_right").html(curr_pi_count);
+				$("#pi_selected").html(curr_pi_count);
+			});		
+
+			//and lastly, if none checked, hide view results button - you can only do this after selecting a topic
+			if (numTopicsSelected==0) $(".button_view_results").hide();
+			else $(".button_view_results").show();
+		});		
+	});
+
+	function updateTopicSummary(checked,data) {
+//console.log(selected_topics);	
+	//console.log(checked);
+	//console.log(data);
+
+		//extract the selected items out of the cached list
+		//current checked items
+		//var checkedtopics = $('#topics_table input:checked[name="topic[]"]').map(function() {
+//console.log(selected_topics);
+		var checkedtopics = _.map(selected_topics,function(topicid) {
+			var tmp = topicsummarydata[topicid]; //$(this).val()
+			//add the topic id
+			tmp['id'] = topicid; //$(this).val();
+//console.log(tmp);			
+			return tmp;
+			//return parseInt($(this).val());
+		}); //.get().join()
+
+		//total funding
+		var curr_summary_totalfunding = parseInt(removeNumberFormatting($("#summary_totalfunding").html()));
+		var summary_totalfunding = data['summary_totalfunding'];
+		if (checked) curr_summary_totalfunding += summary_totalfunding;
+		else curr_summary_totalfunding -= summary_totalfunding;
+		curr_summary_totalfunding = addCommas(curr_summary_totalfunding);
+		if (curr_summary_totalfunding) curr_summary_totalfunding = '$'+curr_summary_totalfunding; 
+		$("#summary_totalfunding").html(curr_summary_totalfunding);
+		//max year
+		var curr_summary_maxyear = $("#summary_maxyear").html();
+		var summary_maxyear = data['summary_maxyear'];
+		//if the max year is not set this is the max year
+		if (!curr_summary_maxyear) curr_summary_maxyear = summary_maxyear;
+		//if the max year is set and 
+		else {
+			//we are checking
+			if (checked) {
+				//this year is more than the curr max year update curr max year
+				if (summary_maxyear>parseInt(curr_summary_maxyear)) curr_summary_maxyear = summary_maxyear;
+			} else {
+				//if we are unchecking
+				//if nothing currently checked reset
+				if (checkedtopics.length==0) curr_summary_maxyear = null;
+				else {
+					//this year is not the same as curr max year
+					if (summary_maxyear!=parseInt(curr_summary_maxyear)) {
+						//reset to the "previous" max - we get previous max by looping through the list of cached topcis (excluding this one) and finding the max year
+						summary_maxyear = 0;
+						for (var i in checkedtopics) {
+							if (checkedtopics[i]['summary_maxyear']>summary_maxyear) summary_maxyear = checkedtopics[i]['summary_maxyear'];
+						}
+						curr_summary_maxyear = summary_maxyear;			
+					}				
+				}
+			}
+		}
+		$("#summary_maxyear").html(curr_summary_maxyear);	
+		//min year
+		var curr_summary_minyear = $("#summary_minyear").html();
+		var summary_minyear = data['summary_minyear'];
+		//if the min year is not set this is the min year
+		if (!curr_summary_minyear) curr_summary_minyear = summary_minyear;
+		//if the min year is set and 
+		else {
+			//we are checking
+			if (checked) {
+				//this year is less than the curr min year update curr min year
+				if (summary_minyear>parseInt(curr_summary_minyear)) curr_summary_minyear = summary_minyear;
+			} else {
+				//if we are unchecking
+				//if nothing currently checked reset
+				if (checkedtopics.length==0) curr_summary_minyear = null;
+				else {
+					//this year is the not same as curr min year
+					if (summary_minyear!=parseInt(curr_summary_minyear)) {
+						//reset to the "previous" max - we get previous max by looping through the list of cached topcis (excluding this one) and finding the min year
+						summary_minyear = 0;
+						for (var i in checkedtopics) {
+							if (!summary_minyear) summary_minyear = checkedtopics[i]['summary_minyear'];
+							else {
+								if (checkedtopics[i]['summary_minyear']<summary_minyear) summary_minyear = checkedtopics[i]['summary_minyear'];							
+							}
+						}
+						curr_summary_minyear = summary_minyear;			
+					}				
+				}
+			}
+		}
+		$("#summary_minyear").html(curr_summary_minyear);
+	//console.log(checkedtopics);	
+		//now collate by count
+		var status = {};
+		var org_count = {};
+		var year_count = {};
+		var org_funding = {};
+		var year_funding = {};
+		for (var i in checkedtopics) {
+			var summary_status = checkedtopics[i]["summary_status"];
+			//gather counts by status
+			for (var topic_status in summary_status) {
+				if (status[topic_status]) status[topic_status] += summary_status[topic_status];
+				else status[topic_status] = summary_status[topic_status];
+			}
+			//gather counts by year
+			var summary_year = checkedtopics[i]["summary_year_count"];
+			for (var topic_year in summary_year) {
+				if (year_count[topic_year]) year_count[topic_year] += summary_year[topic_year];
+				else year_count[topic_year] = summary_year[topic_year];
+			}
+			//gather counts by org
+			var summary_org = checkedtopics[i]["summary_org_count"];
+			for (var topic_org in summary_org) {
+				if (org_count[topic_org]) org_count[topic_org] += summary_org[topic_org];
+				else org_count[topic_org] = summary_org[topic_org];
+			}
+			//gather funding by year
+			var summary_year = checkedtopics[i]["summary_year_funding"];
+			for (var topic_year in summary_year) {
+				if (year_funding[topic_year]) year_funding[topic_year] += summary_year[topic_year];
+				else year_funding[topic_year] = summary_year[topic_year];
+			}
+			//gather funding by org
+			var summary_org = checkedtopics[i]["summary_org_funding"];
+			for (var topic_org in summary_org) {
+				if (org_funding[topic_org]) org_funding[topic_org] += summary_org[topic_org];
+				else org_funding[topic_org] = summary_org[topic_org];
+			}
+		}
+		//got them all, now display
+		var status_html = '';
+		for (var i in status) {
+			status_html += '<tr>';
+			status_html += '<td class="label">';
+			if (i=='award') status_html+='Awarded';
+			else if (i=='propose') status_html+='Other';
+			else if (i=='decline') status_html+='Declined';
+			status_html += '</td>';
+			status_html += '<td class="value">'+status[i]+'</td>';
+			status_html += '</tr>';
+		}
+		//by count
+		var year_count_html = '';
+		//we want to sort
+		//currently an associative array - so first have to sort keys - bit icky but quick and dirty for now
+		var sortedKeys = new Array();
+		var sortedObj = {};	
+		// Separate keys and sort them
+		for (var i in year_count){
+			sortedKeys.push(i);
+		}
+		sortedKeys.sort();		 
+		// Reconstruct sorted obj based on keys
+		for (var i in sortedKeys){
+			sortedObj[sortedKeys[i]] = year_count[sortedKeys[i]];
+		}
+		for (var i in sortedObj) {
+			year_count_html += '<tr>';
+			year_count_html += '<td class="label">'+i+'</td>';
+			year_count_html += '<td class="value">'+sortedObj[i]+'</td>';
+			year_count_html += '</tr>';
+		}
+		var org_count_html = '';
+		for (var i in org_count) {
+			org_count_html += '<tr>';
+			org_count_html += '<td class="label">'+i+'</td>';
+			org_count_html += '<td class="value">'+org_count[i]+'</td>';
+			org_count_html += '</tr>';
+		}
+		//by funding
+		var year_funding_html = '';
+		//we want to sort
+		//currently an associative array - so first have to sort keys - bit icky but quick and dirty for now
+		var sortedKeys = new Array();
+		var sortedObj = {};	
+		// Separate keys and sort them
+		for (var i in year_funding){
+			sortedKeys.push(i);
+		}
+		sortedKeys.sort();		 
+		// Reconstruct sorted obj based on keys
+		for (var i in sortedKeys){
+			sortedObj[sortedKeys[i]] = year_funding[sortedKeys[i]];
+		}
+		for (var i in sortedObj) {
+			year_funding_html += '<tr>';
+			year_funding_html += '<td class="label">'+i+'</td>';
+			year_funding_html += '<td class="value">'+'$'+addCommas(sortedObj[i])+'</td>';
+			year_funding_html += '</tr>';
+		}
+		var org_funding_html = '';
+		for (var i in org_funding) {
+			org_funding_html += '<tr>';
+			org_funding_html += '<td class="label">'+i+'</td>';
+			org_funding_html += '<td class="value">'+'$'+addCommas(org_funding[i])+'</td>';
+			org_funding_html += '</tr>';
+		}
+		//build breakdown
+		var html = '';
+		html += status_html;
+		if (org_count_html || org_funding_html) {
+			html += '<tr><td class="label">&nbsp;</td><td>&nbsp;</td></tr>';
+			html += '<tr class="heading"><td class="label" colspan="2"><strong>By Division</strong></td></tr>';
+			if (org_count_html) {
+				html += '<tr><td class="label" colspan="2"><strong>By Qty.</strong></td></tr>';
+				html += org_count_html;			
+			}
+			if (org_funding_html) {
+				html += '<tr><td class="label" colspan="2"><strong>By Award Amount</strong></td></tr>';
+				html += org_funding_html;			
+			}
+		}
+		if (year_count_html || year_funding_html) {
+			html += '<tr><td class="label">&nbsp;</td><td>&nbsp;</td></tr>';
+			html += '<tr class="heading"><td class="label" colspan="2"><strong>By Year</strong></td></tr>';
+			if (year_count_html) {
+				html += '<tr><td class="label" colspan="2"><strong>By Qty.</strong></td></tr>';
+				html += year_count_html;
+			}
+			if (year_funding_html) {
+				html += '<tr><td class="label" colspan="2"><strong>By Award Amount</strong></td></tr>';
+				html += year_funding_html;
+			}
+		}
+		$("#summary_breakdown").html(html);
+		//now for the topic rankings
+		//first by number of grants
+		//sort the summaries list - descending by count
+		checkedtopics.sort(function(a,b) {return (parseInt(a.summary_count) > parseInt(b.summary_count)) ? -1 : ((parseInt(b.summary_count) > parseInt(a.summary_count)) ? 1 : 0);} );	
+		//now select the top 3 out of the summaries list
+		for (var i=0;i<3;i++) {
+			//we always reset this - just for now, for simplicity sake, later we can add a check to see if the rankings need to be updated or not
+			$("#summary_rankedtopics_bycount_"+(i+1)).html(null);	
+			if (checkedtopics[i]) {
+				//we found one, add it to the summary
+				$("#summary_rankedtopics_bycount_"+(i+1)).html('t'+checkedtopics[i]['id']+' ('+checkedtopics[i]['summary_count']+')');				
+			}
+		}
+		//do the funding rankings
+		//sort the summaries list - descending by totalfunding
+		checkedtopics.sort(function(a,b) {return (parseInt(a.summary_totalfunding) > parseInt(b.summary_totalfunding)) ? -1 : ((parseInt(b.summary_totalfunding) > parseInt(a.summary_totalfunding)) ? 1 : 0);} );	
+		//now select the top 3 out of the summaries list
+		for (var i=0;i<3;i++) {
+			//we always reset this - just for now, for simplicity sake, later we can add a check to see if the rankings need to be updated or not
+			$("#summary_rankedtopics_byfunding_"+(i+1)).html(null);	
+			if (checkedtopics[i]) {
+				//we found one, add it to the summary
+				var totalfunding = addCommas(checkedtopics[i]['summary_totalfunding']);
+				if (totalfunding) totalfunding = '$'+totalfunding;
+				$("#summary_rankedtopics_byfunding_"+(i+1)).html('t'+checkedtopics[i]['id']+' ('+totalfunding+')');	
+			}
+		}
+	}
+
+	function updatePISummary(aData,selected) {
+		//now aData[0] - 1st column(count_id), aData[1] -2nd, etc. 
+		//trap grant selection
+		var numPIsSelected = $("#summary_pis").html();
+		if (selected) {
+			numPIsSelected++; 
+		} else {
+			numPIsSelected--;
+		}
+
+		$("#summary_pis").html(numPIsSelected);
+
+		//load prop data for selected pis so we can calculate summaries and rankings
+		var propids = [];
+	//	var rowdata = oTable.fnGetData(this);
+		var tmp_propids = aData[6];
+		//make array out of string
+		if (tmp_propids) propids = tmp_propids.split(',');
+		//now load the data for each propid if it is not already loaded
+		var params = '';
+		for (var i in propids) {
+			var propid = jQuery.trim(propids[i]);
+			//if not previously loaded and cached, load it
+			if (!propsummarydata[propid]) {
+				if (params) params += ',';
+				params += propid;
+			}
+		}
+		if (params) {
+	//console.log('getting data:'+params);
+			$.getJSON(apiurl + 'prop?id=' + params + '&jsoncallback=?', function(data) {
+	//console.log(data);
+				//for each prop store the data in the cache
+				if (data["data"]) {
+					for (var i in data["data"]) {							
+	//console.log(data["data"][i]["nsf_id"]);							
+						propsummarydata[data["data"][i]["nsf_id"]] = data["data"][i];
+					}
+				}
+				summarizePI();
+			});
+		} else {
+			summarizePI();
+		}	
+	}	
+
+	function summarizePI() {
+	//console.log(propsummarydata);
+		//now recalculate the rankings - do this regardless of checked or unchecked
+		//current checked items
+		var oTable = $("#pi table").dataTable();
+		var checkedpis = _.map(fnGetSelected(oTable), function(v) {
+	//alert(v);		
+	//console.log(v);		
+			var tmp = {};
+			tmp['propcount'] = v[5];
+	//alert(v[5]);
+
+			//now total up the funding for all the proposals
+			var awardcount = 0;
+			var requestfunding = 0;
+			var awardfunding = 0;
+			var mindate = null;
+			var maxdate = null;
+
+			var propids = [];
+			var tmp_propids = v[6];
+			//make array out of string
+			if (tmp_propids) propids = tmp_propids.split(',');
+			for (var i in propids) {
+				var propid = jQuery.trim(propids[i]);
+				//read from cache
+	//console.log(propid);			
+				if (propsummarydata[propid]) {
+					if (propsummarydata[propid]["status"]["code"]=="award") {
+						awardcount++;
+						if (propsummarydata[propid]["awarded"]["dollar"])
+							awardfunding += parseInt(propsummarydata[propid]["awarded"]["dollar"]);
+						var date = new Date(propsummarydata[propid]["awarded"]["date"]);
+					} else {
+						var date = new Date(propsummarydata[propid]["request"]["date"]);
+					}
+					if (propsummarydata[propid]["request"]) requestfunding += parseInt(propsummarydata[propid]["request"]["dollar"]);						
+					if (!mindate) mindate = date;
+					else if (date < mindate) mindate = date;
+					if (!maxdate) maxdate = date;
+					else if (date > maxdate) maxdate = date;
+				}
+			}
+
+			tmp['awardcount'] = awardcount;
+			tmp['awardfunding'] = awardfunding;
+			if (awardcount) tmp['avgawardfunding'] = (awardfunding/awardcount).toFixed(0);
+			else tmp['avgawardfunding'] = 0;
+			tmp['requestfunding'] = requestfunding;
+			if (mindate) tmp['mindate'] = mindate.getMonth()+'/'+mindate.getDate()+'/'+mindate.getFullYear(); else tmp['mindate'] = null;
+			if (maxdate) tmp['maxdate'] = maxdate.getMonth()+'/'+maxdate.getDate()+'/'+maxdate.getFullYear(); else tmp['maxdate'] = null;
+			//add the topic id
+			tmp['id'] = v[1];
+			tmp['name'] = v[2];
+
+			return tmp;			
+		});
+	//console.log('summarized');
+	//console.log(checkedpis);
+
+		//now for the researcher rankings
+		//by number of proposals
+		//sort the summaries list - descending by number of proposals submitted
+		checkedpis.sort(function(a,b) {return (parseInt(a.propcount) > parseInt(b.propcount)) ? -1 : ((parseInt(b.propcount) > parseInt(a.propcount)) ? 1 : 0);} );	
+		//now select the top 5 out of the summaries list
+		for (var i=0;i<5;i++) {
+			//we always reset this - just for now, for simplicity sake, later we can add a check to see if the rankings need to be updated or not
+			$("#summary_rankedpis_bypropcount_"+(i+1)).html(null);	
+			if (checkedpis[i]) {
+				//we found one, add it to the summary
+				$("#summary_rankedpis_bypropcount_"+(i+1)).html(checkedpis[i]['propcount']+' ('+checkedpis[i]['name']+')');				
+			}
+		}
+		//by number of awards
+		//sort the summaries list - descending by number of awarded proposals
+		checkedpis.sort(function(a,b) {return (parseInt(a.awardcount) > parseInt(b.awardcount)) ? -1 : ((parseInt(b.awardcount) > parseInt(a.awardcount)) ? 1 : 0);} );	
+	//console.log(checkedpis);		
+		//now select the top 5 out of the summaries list
+		for (var i=0;i<5;i++) {
+			//we always reset this - just for now, for simplicity sake, later we can add a check to see if the rankings need to be updated or not
+			$("#summary_rankedpis_byawardcount_"+(i+1)).html(null);	
+			if (checkedpis[i] && checkedpis[i]['awardcount']) {
+				//we found one, add it to the summary
+				$("#summary_rankedpis_byawardcount_"+(i+1)).html(checkedpis[i]['awardcount']+' ('+checkedpis[i]['name']+')');				
+			}
+		}
+		//by number of award funding
+		//sort the summaries list - descending by funding of awarded proposals
+		checkedpis.sort(function(a,b) {return (parseInt(a.awardfunding) > parseInt(b.awardfunding)) ? -1 : ((parseInt(b.awardfunding) > parseInt(a.awardfunding)) ? 1 : 0);} );	
+	//console.log(checkedpis);		
+		//now select the top 5 out of the summaries list
+		for (var i=0;i<5;i++) {
+			//we always reset this - just for now, for simplicity sake, later we can add a check to see if the rankings need to be updated or not
+			$("#summary_rankedpis_byawardfunding_"+(i+1)).html(null);	
+			if (checkedpis[i] && checkedpis[i]['awardfunding']) {
+				//we found one, add it to the summary
+				$("#summary_rankedpis_byawardfunding_"+(i+1)).html('$'+addCommas(checkedpis[i]['awardfunding'])+' ('+checkedpis[i]['name']+')');				
+			}
+		}
+		//by avg. award funding by grant
+		//sort the summaries list - descending by funding of awarded proposals
+		checkedpis.sort(function(a,b) {return (parseFloat(a.avgawardfunding) > parseFloat(b.avgawardfunding)) ? -1 : ((parseFloat(b.avgawardfunding) > parseFloat(a.avgawardfunding)) ? 1 : 0);} );	
+	//console.log(checkedpis);		
+		//now select the top 5 out of the summaries list
+		for (var i=0;i<5;i++) {
+			//we always reset this - just for now, for simplicity sake, later we can add a check to see if the rankings need to be updated or not
+			$("#summary_rankedpis_byavgawardfunding_"+(i+1)).html(null);	
+			if (checkedpis[i] && checkedpis[i]['avgawardfunding']) {
+				//we found one, add it to the summary
+				$("#summary_rankedpis_byavgawardfunding_"+(i+1)).html('$'+addCommas(checkedpis[i]['avgawardfunding'])+' ('+checkedpis[i]['name']+')');				
+			}
+		}
+	}
+
+	function calcPIPropDetails(v) {
+	//console.log(propsummarydata);
+		//now recalculate the rankings - do this regardless of checked or unchecked
+		//current checked items
+		var tmp = {};
+		tmp['propcount'] = v[5];
+
+		//now total up the funding for all the proposals
+		var awardcount = 0;
+		var requestfunding = 0;
+		var awardfunding = 0;
+		var mindate = null;
+		var maxdate = null;
+
+		var propids = [];
+		var tmp_propids = v[6];
+		//make array out of string
+		if (tmp_propids) propids = tmp_propids.split(',');
+		for (var i in propids) {
+			var propid = jQuery.trim(propids[i]);
+			//read from cache
+	//console.log(propid);			
+			if (propsummarydata[propid]) {
+				if (propsummarydata[propid]["status"]["code"]=="award") {
+					awardcount++;
+					if (propsummarydata[propid]["awarded"]["dollar"])
+						awardfunding += parseInt(propsummarydata[propid]["awarded"]["dollar"]);
+					var date = new Date(propsummarydata[propid]["awarded"]["date"]);
+				} else {
+					var date = new Date(propsummarydata[propid]["request"]["date"]);
+				}
+				if (propsummarydata[propid]["request"]) requestfunding += parseInt(propsummarydata[propid]["request"]["dollar"]);						
+				if (!mindate) mindate = date;
+				else if (date < mindate) mindate = date;
+				if (!maxdate) maxdate = date;
+				else if (date > maxdate) maxdate = date;
+			}
+		}
+		tmp['awardcount'] = awardcount;
+		tmp['awardfunding'] = '$'+addCommas(awardfunding.toString());
+		if (awardcount) tmp['avgawardfunding'] = '$'+addCommas((awardfunding/awardcount).toFixed(0).toString());
+		else tmp['avgawardfunding'] = 0;
+		tmp['requestfunding'] = '$'+addCommas(requestfunding.toString());
+		if (mindate) tmp['mindate'] = mindate.getMonth()+'/'+mindate.getDate()+'/'+mindate.getFullYear(); else tmp['mindate'] = null;
+		if (maxdate) tmp['maxdate'] = maxdate.getMonth()+'/'+maxdate.getDate()+'/'+maxdate.getFullYear(); else tmp['maxdate'] = null;
+		//add the topic id
+		tmp['id'] = v[1];
+		tmp['name'] = v[2];
+
+		return tmp;			
+	}
+	</script>	
+</div>
+<div class="clear"></div>

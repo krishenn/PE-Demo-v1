@@ -1,5 +1,5 @@
 var proposalaccessallowed = false;
-var apiurl = 'http://rd-dashboard.nitrd.gov/gapi/api.py/'; //'http://readidata.nitrd.gov/star/py/api.py/'; //_beta
+var apiurl = 'http://rd-dashboard.nitrd.gov/star/api/'; //'http://rd-dashboard.nitrd.gov/gapi/api.py/'; //'http://readidata.nitrd.gov/star/py/api.py/'; //_beta
 
 var states = {
   'AL': 'Alabama',
@@ -55,6 +55,14 @@ var states = {
   'WY': 'Wyoming'
 };
 
+var parentdivision = {
+"ANT":"Office of Polar Programs",
+"ARC":"Office of Polar Programs",
+"AIL":"Office of Polar Programs",
+"PEHS":"Office of Polar Programs",
+"A/D":"Office of Polar Programs"
+};
+
 var divisions = {
 "OCI":"Office of Cyberinfrastructure",
 "OGC":"Office of the General Counsel",
@@ -62,7 +70,12 @@ var divisions = {
 "OISE":"Office of International Science and Engineering",
 "ODI":"Office of Diversity and Inclusion (ODI)",
 "OLPA":"Office of Legislative & Public Affairs",
-"OPP":"Office of Polar Programs",
+//"OPP":"Office of Polar Programs",
+"ANT":"Antarctic Sciences",
+"ARC":"Arctic Sciences",
+"AIL":"Antarctic Infrastructure and Logistics",
+"PEHS":"Office of Polar Environment, Health and Safety",
+"A/D":"Front Office",
 "NSB":"Office of the Assistant Director",
 "OIG":"Office of the Assistant Director",
 "MCB":"Division of Molecular & Cellular Biosciences",
@@ -118,7 +131,12 @@ var directorates = {
 "OISE":"Office of the Director",
 "ODI":"Office of the Director",
 "OLPA":"Office of the Director",
-"OPP":"Office of the Director",
+//"OPP":"Office of the Director",
+"ANT":"Office of the Director",
+"ARC":"Office of the Director",
+"AIL":"Office of the Director",
+"PEHS":"Office of the Director",
+"A/D":"Office of the Director",
 "NSB":"National Science Board",
 "OIG":"Office of the Inspector General",
 "MCB":"Directorate for Biological Sciences",
@@ -159,10 +177,6 @@ var directorates = {
 "HRM":"Office of Information & Resource Management",
 "DIS":"Office of Information & Resource Management",
 "DAS":"Office of Information & Resource Management",
-"ANT":"Directorate for Polar Research",
-"ARC":"Directorate for Polar Research",
-"PEHS":"Directorate for Polar Research",
-"AIL":"Directorate for Polar Research",
 "EPS":"Office of Information & Resource Management",
 "OIA":"Office of the Director",
 "ENG":"Directorate for Engineering",
@@ -170,6 +184,13 @@ var directorates = {
 "MPS":"Directorate for Mathematical & Physical Sciences",
 "SBE":"Directorate for Social, Behavioral & Economic Sciences"
 }
+
+/*
+"ANT":"Directorate for Polar Research",
+"ARC":"Directorate for Polar Research",
+"PEHS":"Directorate for Polar Research",
+"AIL":"Directorate for Polar Research",
+*/
 
 //globals
 var legend_topics = {};
